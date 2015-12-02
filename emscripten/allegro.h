@@ -11,8 +11,8 @@ extern "C" {
 #endif
 
 /* CONFIGURATION ROUTINES */
-extern void c_install_allegro();
-extern void c_allegro_init();
+extern void c_install_allegro(void);
+extern void c_allegro_init(void);
 extern void c_allegro_init_all(const char *canvas_id, int w, int h, int menu, int enable_keys);
 #define END_OF_MAIN()
 
@@ -28,26 +28,26 @@ extern int c_mouse_my;
 extern int c_mouse_mz;
 
 extern int c_install_mouse(int menu);
-extern int c_remove_mouse();
-extern int c_show_mouse();
-extern int c_hide_mouse();
+extern int c_remove_mouse(void);
+extern int c_show_mouse(void);
+extern int c_hide_mouse(void);
 
 /* TIMER ROUTINES */
 #define SECS_TO_TIMER(secs) ( secs*1000 )
 #define MSEC_TO_TIMER(msec) ( msec )
 #define  BPS_TO_TIMER(bps)  (    1000./(float)bps )
 #define  BPM_TO_TIMER(bpm)  ( 60*1000./(float)bpm )
-typedef void (procedure*)(void);
-typedef void (bar*)(float progress);
-extern void c_install_timer();
-extern long c_time();
+typedef void (*procedure)(void);
+typedef void (*bar)(float progress);
+extern void c_install_timer(void);
+extern long c_time(void);
 extern void c_install_int(procedure p, long msec);
 extern void c_install_int_ex(procedure p, long speed);
 extern void c_loop(procedure p, long speed);
 extern void c_loading_bar(float progress);
 extern void c_ready(procedure p, bar b);
-extern void c_remove_int(procedure);
-extern void c_remove_all_ints();
+extern void c_remove_int(procedure p);
+extern void c_remove_all_ints(void);
 
 /* KEYBOARD ROUTINES */
 const char KEY_A = 0x41, KEY_B = 0x42, KEY_C = 0x43, KEY_D = 0x44, KEY_E = 0x45, KEY_F = 0x46, KEY_G = 0x47,
@@ -73,7 +73,7 @@ extern int c_key[];
 extern int c_pressed[];
 extern int c_released[];
 extern int c_install_keyboard(int enable_keys);
-extern int c_remove_keyboard();
+extern int c_remove_keyboard(void);
 
 /* BITMAP ROUTINES */
 typedef struct {
@@ -91,15 +91,15 @@ extern const int c_SCREEN_H;
 extern int c_set_gfx_mode(const char *canvas_id, int width, int height);
 
 /* DRAWING PRIMITIVES */
-#define var   PI = 3.14159265
-#define var  PI2 = 6.2831853
-#define var PI_2 = 1.570796325
-#define var PI_3 = 1.04719755
-#define var PI_4 = 0.7853981625
+#define   PI = 3.14159265
+#define  PI2 = 6.2831853
+#define PI_2 = 1.570796325
+#define PI_3 = 1.04719755
+#define PI_4 = 0.7853981625
 #define RAD(d) ( -d*PI/180.0 )
 #define DEG(r) ( -r*180.0/PI )
-extern void c_makecol(char r, char g, char b, char a);
-extern void c_makecolf(float r, float g, float b, float a);
+extern int c_makecol(char r, char g, char b, char a);
+extern int c_makecolf(float r, float g, float b, float a);
 extern char c_getr(int colour);
 extern char c_getg(int colour);
 extern char c_getb(int colour);
@@ -137,7 +137,8 @@ extern void c_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, i
 extern void c_stretch_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
 
 /* TEXT OUTPUT */
-typedef int FONT_OBJECT:
+typedef int FONT_OBJECT;
+extern FONT_OBJECT *c_font;
 extern FONT_OBJECT* c_load_font(char *filename);
 extern FONT_OBJECT* c_create_font(char *family);
 extern void c_textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
@@ -146,9 +147,9 @@ extern void c_textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *stri
 
 /* SOUND ROUTINES */
 typedef int SAMPLE_OBJECT;
-extern void c_install_sound();
+extern void c_install_sound(void);
 extern void c_set_volume(float volume);
-extern float c_get_volume();
+extern float c_get_volume(void);
 extern SAMPLE_OBJECT* c_load_sample(char *filename);
 extern void c_destroy_sample(char *filename);
 extern void c_play_sample(SAMPLE_OBJECT *sample, float vol, float freq, int loop);
@@ -157,9 +158,9 @@ extern void c_stop_sample(SAMPLE_OBJECT *sample);
 extern void c_pause_sample(SAMPLE_OBJECT *sample);
 
 /* HELPER MATH FUNCTIONS */
-extern unsigned short c_rand();
-extern int c_rand32();
-extern float c_frand();
+extern unsigned short c_rand(void);
+extern int c_rand32(void);
+extern float c_frand(void);
 #define abs(a) ( (a<0)?(-a):(a) )
 extern float c_length(float x, float y);
 extern float c_distance(float x1, float y1, float x2, float y2);
@@ -176,20 +177,20 @@ extern float c_scaleclamp(float value, float min, float max, float min2, float m
 
 /* DEBUG FUNCTIONS */
 extern int c_ALLEGRO_CONSOLE;
-extern void c_enable_debug(char *id);
-extern void c_log(char *string);
-extern void c_wipe_log();
+extern void c_enable_debug(const char *id);
+extern void c_log(const char *string);
+extern void c_wipe_log(void);
 
 #ifndef AL4JS_NO_INLINE
 
-inline void install_allegro() {
+inline void install_allegro(void) {
 	c_install_allegro();
 }
-inline void allegro_init() {
+inline void allegro_init(void) {
 	c_allegro_init();
 }
-inline void allegro_init_all(int id, int w, int h, int menu, int enable_keys) {
-	c_allegro_init_all(id, w, h, menu, enable_keys);
+inline void allegro_init_all(const char *c_id, int w, int h, int menu, int enable_keys) {
+	c_allegro_init_all(c_id, w, h, menu, enable_keys);
 }
 #define mouse_b c_mouse_b
 #define mouse_pressed c_mouse_pressed
@@ -201,22 +202,22 @@ inline void allegro_init_all(int id, int w, int h, int menu, int enable_keys) {
 #define mouse_my c_mouse_my
 #define mouse_mz c_mouse_mz
 inline int install_mouse(int menu) {
-	c_install_mouse(menu);
+	return c_install_mouse(menu);
 }
-inline int remove_mouse() {
-	c_remove_mouse();
+inline int remove_mouse(void) {
+	return c_remove_mouse();
 }
-inline int show_mouse() {
-	c_show_mouse();
+inline int show_mouse(void) {
+	return c_show_mouse();
 }
-inline int hide_mouse() {
-	c_hide_mouse();
+inline int hide_mouse(void) {
+	return c_hide_mouse();
 }
-inline void install_timer() {
+inline void install_timer(void) {
 	c_install_timer();
 }
-inline long time() {
-	c_time();
+inline long time(void) {
+	return c_time();
 }
 inline void install_int(procedure p, long msec) {
 	c_install_int(p, msec);
@@ -233,68 +234,68 @@ inline void loading_bar(float progress) {
 inline void ready(procedure p, bar b) {
 	c_ready(p, b);
 }
-inline void remove_int(procedure) {
-	c_remove_int(procedure);
+inline void remove_int(procedure p) {
+	c_remove_int(p);
 }
-inline void remove_all_ints() {
+inline void remove_all_ints(void) {
 	c_remove_all_ints();
 }
 #define key c_key
 #define pressed c_pressed
 #define released c_released
 inline int install_keyboard(int enable_keys) {
-	c_install_keyboard(enable_keys);
+	return c_install_keyboard(enable_keys);
 }
-inline int remove_keyboard() {
-	c_remove_keyboard();
+inline int remove_keyboard(void) {
+	return c_remove_keyboard();
 }
 inline BITMAP_OBJECT* create_bitmap(int width, int height) {
-	c_create_bitmap(width, height);
+	return c_create_bitmap(width, height);
 }
 inline BITMAP_OBJECT* load_bitmap(const char *filename) {
-	c_load_bitmap(filename);
+	return c_load_bitmap(filename);
 }
 inline BITMAP_OBJECT* load_bmp(const char *filename) {
-	c_load_bmp(filename);
+	return c_load_bmp(filename);
 }
 #define canvas c_canvas
 #define SCREEN_W c_SCREEN_W
 #define SCREEN_H c_SCREEN_H
 inline int set_gfx_mode(const char *canvas_id, int width, int height) {
-	c_set_gfx_mode(canvas_id, width, height);
+	return c_set_gfx_mode(canvas_id, width, height);
 }
-inline void makecol(char r, char g, char b, char a) {
-	c_makecol(r, g, b, a);
+inline int makecol(char r, char g, char b, char a) {
+	return c_makecol(r, g, b, a);
 }
-inline void makecolf(float r, float g, float b, float a) {
-	c_makecolf(r, g, b, a);
+inline int makecolf(float r, float g, float b, float a) {
+	return c_makecolf(r, g, b, a);
 }
 inline char getr(int colour) {
-	c_getr(colour);
+	return c_getr(colour);
 }
 inline char getg(int colour) {
-	c_getg(colour);
+	return c_getg(colour);
 }
 inline char getb(int colour) {
-	c_getb(colour);
+	return c_getb(colour);
 }
 inline char geta(int colour) {
-	c_geta(colour);
+	return c_geta(colour);
 }
 inline float getrf(int colour) {
-	c_getrf(colour);
+	return c_getrf(colour);
 }
 inline float getgf(int colour) {
-	c_getgf(colour);
+	return c_getgf(colour);
 }
 inline float getbf(int colour) {
-	c_getbf(colour);
+	return c_getbf(colour);
 }
 inline float getaf(int colour) {
-	c_getaf(colour);
+	return c_getaf(colour);
 }
 inline int getpixel(BITMAP_OBJECT *bitmap, int x, int y) {
-	c_getpixel(bitmap, x, y);
+	return c_getpixel(bitmap, x, y);
 }
 inline void putpixel(BITMAP_OBJECT *bitmap, int x, int y, int colour) {
 	c_putpixel(bitmap, x, y, colour);
@@ -368,11 +369,12 @@ inline void blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int
 inline void stretch_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
 	c_stretch_blit(source, dest, sx, sy, sw, sh, dx, dy, dw, dh);
 }
+#define font c_font
 inline FONT_OBJECT* load_font(char *filename) {
-	c_load_font(filename);
+	return c_load_font(filename);
 }
 inline FONT_OBJECT* create_font(char *family) {
-	c_create_font(family);
+	return c_create_font(family);
 }
 inline void textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width) {
 	c_textout(bitmap, font, string, x, y, size, colour, outline, width);
@@ -383,17 +385,17 @@ inline void textout_centre(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *strin
 inline void textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width) {
 	c_textout_right(bitmap, font, string, x, y, size, colour, outline, width);
 }
-inline void install_sound() {
+inline void install_sound(void) {
 	c_install_sound();
 }
 inline void set_volume(float volume) {
 	c_set_volume(volume);
 }
-inline float get_volume() {
-	c_get_volume();
+inline float get_volume(void) {
+	return c_get_volume();
 }
 inline SAMPLE_OBJECT* load_sample(char *filename) {
-	c_load_sample(filename);
+	return c_load_sample(filename);
 }
 inline void destroy_sample(char *filename) {
 	c_destroy_sample(filename);
@@ -410,59 +412,59 @@ inline void stop_sample(SAMPLE_OBJECT *sample) {
 inline void pause_sample(SAMPLE_OBJECT *sample) {
 	c_pause_sample(sample);
 }
-inline unsigned short rand() {
-	c_rand();
+inline unsigned short rand(void) {
+	return c_rand();
 }
-inline int rand32() {
-	c_rand32();
+inline int rand32(void) {
+	return c_rand32();
 }
-inline float frand() {
-	c_frand();
+inline float frand(void) {
+	return c_frand();
 }
 inline float length(float x, float y) {
-	c_length(x, y);
+	return c_length(x, y);
 }
 inline float distance(float x1, float y1, float x2, float y2) {
-	c_distance(x1, y1, x2, y2);
+	return c_distance(x1, y1, x2, y2);
 }
 inline float distance2(float x1, float y1, float x2, float y2) {
-	c_distance2(x1, y1, x2, y2);
+	return c_distance2(x1, y1, x2, y2);
 }
 inline float linedist(float ex1, float ey1, float ex2, float ey2, float x, float y) {
-	c_linedist(ex1, ey1, ex2, ey2, x, y);
+	return c_linedist(ex1, ey1, ex2, ey2, x, y);
 }
 inline float lerp(float from, float to, float progress) {
-	c_lerp(from, to, progress);
+	return c_lerp(from, to, progress);
 }
 inline float dot(float x1, float y1, float x2, float y2) {
-	c_dot(x1, y1, x2, y2);
+	return c_dot(x1, y1, x2, y2);
 }
 inline int   sgn(float a) {
-	c_sgn(a);
+	return c_sgn(a);
 }
 inline float angle(float x1, float y1, float x2, float y2) {
-	c_angle(x1, y1, x2, y2);
+	return c_angle(x1, y1, x2, y2);
 }
 inline float anglediff(float a, float b) {
-	c_anglediff(a, b);
+	return c_anglediff(a, b);
 }
 inline float clamp(float value, float min, float max) {
-	c_clamp(value, min, max);
+	return c_clamp(value, min, max);
 }
 inline float scale(float value, float min, float max, float min2, float max2) {
-	c_scale(value, min, max, min2, max2);
+	return c_scale(value, min, max, min2, max2);
 }
 inline float scaleclamp(float value, float min, float max, float min2, float max2) {
-	c_scaleclamp(value, min, max, min2, max2);
+	return c_scaleclamp(value, min, max, min2, max2);
 }
 #define ALLEGRO_CONSOLE c_ALLEGRO_CONSOLE
-inline void enable_debug(char *id) {
+inline void enable_debug(const char *id) {
 	c_enable_debug(id);
 }
-inline void log(char *string) {
+inline void al_log(const char *string) { /* log() is a built-in function, renamed to al_log */
 	c_log(string);
 }
-inline void wipe_log() {
+inline void wipe_log(void) {
 	c_wipe_log();
 }
 

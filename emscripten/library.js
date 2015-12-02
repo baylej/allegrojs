@@ -11,7 +11,16 @@ var AllegroJS = {
 	_samples: [null],
 	_fonts: [null],
 
-	// HEAP MANIPULATORS
+	// PRIVATE FUNCTIONS
+	_post_set_gfx_mode: function() {
+		c_SCREEN_W = SCREEN_W;
+		c_SCREEN_H = SCREEN_H;
+		c_canvas.w = SCREEN_W;
+		c_canvas.h = SCREEN_H;
+		_bitmaps[0] = canvas;
+		_fonts[0] = font;
+		c_canvas = _alloc_pack_bitmap(0);
+	},
 	_alloc_pack_bitmap: function(handle) {
 		var res = _malloc(3*4);
 		setValue(res, hanle, "i32");
@@ -21,7 +30,7 @@ var AllegroJS = {
 	},
 	_unpack_bitmap: function(ptr) {
 		return getValue(res, "i32");
-	}
+	},
 
 	// GLOBALS
 	c_mouse_b: mouse_b,
@@ -47,12 +56,7 @@ var AllegroJS = {
 	c_allegro_init: allegro_init,
 	c_allegro_init_all: function(id, w, h, menu, enable_keys) {
 		allegro_init_all(id, w, h, menu, enable_keys);
-		c_SCREEN_W = SCREEN_W;
-		c_SCREEN_H = SCREEN_H;
-		c_canvas.w = SCREEN_W;
-		c_canvas.h = SCREEN_H;
-		_bitmaps[0] = canvas;
-		c_canvas = _alloc_pack_bitmap(0);
+		_post_set_gfx_mode();
 	},
 
 	c_install_mouse: install_mouse,
@@ -102,11 +106,7 @@ var AllegroJS = {
 
 	c_set_gfx_mode: function(canvas_id, w, h) {
 		set_gfx_mode(canvas_id, w, h);
-		c_SCREEN_W = SCREEN_W;
-		c_SCREEN_H = SCREEN_H;
-		c_canvas.w = SCREEN_W;
-		c_canvas.h = SCREEN_H;
-		_bitmaps[0] = canvas;
+		_post_set_gfx_mode();
 	},
 
 	c_makecol: makecol,
