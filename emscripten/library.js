@@ -11,15 +11,26 @@ var AllegroJS = {
 		_bitmaps: [null],
 		_samples: [null],
 		_fonts: [null],
+		_ccanvas: null,
+		_keyboard_installed: false,
+		_ckeys: null,
+		_cpressed: null,
+		_creleased: null,
 
 		// PRIVATE FUNCTIONS
-		_post_set_gfx_mode__deps: ["c_SCREEN_W", "c_SCREEN_H", "c_canvas"],
+		_post_install_keyboard: function() {
+			ALLEG._keyboard_installed = true;
+			ALLEG._ckeys = _malloc(4 * keys.length);
+			writeArrayToMemory(keys, ALLEG._ckeys);
+			ALLEG._cpressed = _malloc(4 * pressed.length);
+			writeArrayToMemory(pressed, ALLEG._cpressed);
+			ALLEG._creleased = _malloc(4 * released.length);
+			writeArrayToMemory(released, ALLEG._creleased);
+		},
 		_post_set_gfx_mode: function() {
 			ALLEG._bitmaps[0] = canvas;
 			ALLEG._fonts[0] = font;
-			_c_SCREEN_W = SCREEN_W;
-			_c_SCREEN_H = SCREEN_H;
-			_c_canvas = ALLEG._alloc_pack_bitmap(0);
+			ALLEG._ccanvas = ALLEG._alloc_pack_bitmap(0);
 		},
 		_alloc_pack_bitmap: function(handle) {
 			var res = _malloc(3*4);
@@ -33,31 +44,32 @@ var AllegroJS = {
 		},
 	},
 
-	// GLOBALS
-	c_mouse_b: mouse_b,
-	c_mouse_pressed: mouse_pressed,
-	c_mouse_released: mouse_released,
-	c_mouse_x: mouse_x,
-	c_mouse_y: mouse_y,
-	c_mouse_z: mouse_z,
-	c_mouse_mx: mouse_mx,
-	c_mouse_my: mouse_my,
-	c_mouse_mz: mouse_mz,
-	c_key: key,
-	c_pressed: pressed,
-	c_released: released,
-	c_canvas: null,
-	c_SCREEN_W: SCREEN_W,
-	c_SCREEN_H: SCREEN_H,
-	c_font: 0,
-	c_ALLEGRO_CONSOLE: ALLEGRO_CONSOLE,
+	// GLOBALS, as functions because globals are no longer supported in emscripten (too bad)
+	c_mouse_b: function() { return mouse_b; },
+	c_mouse_pressed: function() { return mouse_pressed; },
+	c_mouse_released: function() { return mouse_released; },
+	c_mouse_x: function() { return mouse_x; },
+	c_mouse_y: function() { return mouse_y; },
+	c_mouse_z: function() { return mouse_z; },
+	c_mouse_mx: function() { return mouse_mx; },
+	c_mouse_my: function() { return mouse_my; },
+	c_mouse_mz: function() { return mouse_mz; },
+	c_key: function() { return ALLEG._ckeys; },
+	c_pressed: function() { return ALLEG._cpressed; },
+	c_released: function() { return ALLEG._creleased; },
+	c_canvas: function() { return ALLEG._ccanvas; },
+	c_SCREEN_W: function() { return SCREEN_W; },
+	c_SCREEN_H: function() { return SCREEN_H; },
+	c_font: function() { return 0; },
+	c_ALLEGRO_CONSOLE: function() { return ALLEGRO_CONSOLE; },
 
 	// FUNCTIONS
 	c_install_allegro: install_allegro,
 	c_allegro_init: allegro_init,
 	c_allegro_init_all: function(id, w, h, menu, enable_keys) {
 		var cid_s = Pointer_stringify(id);
-		allegro_init_all(cid_s, w, h, menu, enable_keys);
+		allegro_init_all(cid_s, w, h, menu, []); // FIXME: enable_keys to JS array
+		ALLEG._post_install_keyboard();
 		ALLEG._post_set_gfx_mode();
 	},
 
@@ -71,29 +83,29 @@ var AllegroJS = {
 	c_install_int: install_int,
 	c_install_int_ex: install_int_ex,
 	c_loop: function(p, speed) {
-		loop(
-			function(){
-				c_mouse_b = mouse_b;
-				c_mouse_pressed = mouse_pressed;
-				c_mouse_released = mouse_released;
-				c_mouse_x = mouse_x;
-				c_mouse_y = mouse_y;
-				c_mouse_z = mouse_z;
-				c_mouse_mx = mouse_mx;
-				c_mouse_my = mouse_my;
-				c_mouse_mz = mouse_mz;
-				c_key = key;
-				p();
-			},
-			speed
-		);
+		if (ALLEG._keyboard_installed) {
+			loop(
+				function() {
+					writeArrayToMemory(keys, ALLEG._ckeys);
+					writeArrayToMemory(pressed, ALLEG._cpressed);
+					writeArrayToMemory(released, ALLEG._creleased);
+					p();
+				},
+				speed
+			);
+		} else {
+			loop(p, speed);
+		}
 	},
 	c_loading_bar: loading_bar,
 	c_ready: ready,
 	c_remove_int: remove_int,
 	c_remove_all_ints: remove_all_ints,
 
-	c_install_keyboard: install_keyboard,
+	c_install_keyboard: function(enable_keys) {
+		install_keyboard([]); // FIXME: enable_keys to JS array
+		ALLEG._post_install_keyboard();
+	},
 	c_remove_keyboard: remove_keyboard,
 
 	c_create_bitmap: function(width, height) {
@@ -210,7 +222,7 @@ var AllegroJS = {
 	},
 	c_textout_centre: function(b, f, s, x, y, size, col, outline, width) {
 		var str = Pointer_stringify(s);
-		textout_centre(ALLEG.ALLEG._bitmaps[ALLEG.ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
+		textout_centre(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
 	},
 	c_textout_right: function(b, f, s, x, y, size, col, outline, width) {
 		textout_right(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], s, x, y, size, col, outline, width);
