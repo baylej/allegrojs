@@ -91,8 +91,22 @@ var AllegroJS = {
 
 	c_install_timer: install_timer,
 	c_time: time,
-	c_install_int: install_int,
-	c_install_int_ex: install_int_ex,
+	c_install_int: function(p, msec) {
+		var procedure = function() {
+			var stack = Runtime.stackSave();
+			Runtime.dynCall('v', p, null);
+			Runtime.stackRestore(stack);
+		};
+		install_int(procedure, msec);
+	},
+	c_install_int_ex: function(p, speed) {
+		var procedure = function() {
+			var stack = Runtime.stackSave();
+			Runtime.dynCall('v', p, null);
+			Runtime.stackRestore(stack);
+		};
+		install_int_ex(procedure, speed);
+	},
 	c_loop: function(p, speed) {
 		if (ALLEG._keyboard_installed) {
 			loop(
@@ -113,6 +127,7 @@ var AllegroJS = {
 	c_loading_bar: loading_bar,
 	c_ready: function(p, b) {
 		var procedure = function() {
+			// repack bitmaps because they were loaded asynchronously
 			ALLEG._repack_bitmaps();
 			var stack = Runtime.stackSave();
 			Runtime.dynCall('v', p, null);
@@ -121,7 +136,7 @@ var AllegroJS = {
 		if (b) {
 			var bar = function() {
 				var stack = Runtime.stackSave();
-				Runtime.dynCall('v', b, null);
+				Runtime.dynCall('vf', b, null);
 				Runtime.stackRestore(stack);
 			};
 			ready(procedure, bar);
@@ -129,7 +144,9 @@ var AllegroJS = {
 			ready(procedure, null);
 		}
 	},
-	c_remove_int: remove_int,
+	c_remove_int: function(p) {
+		// FIXME: how is this supposed to work!?
+	},
 	c_remove_all_ints: remove_all_ints,
 
 	c_install_keyboard: function(enable_keys) {
