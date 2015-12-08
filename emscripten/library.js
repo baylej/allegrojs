@@ -9,6 +9,7 @@ var AllegroJS = {
 		// HANDLERS
 		// index 0 is reserved for default values
 		_bitmaps: [null],
+		_bitmap_addrs: [null],
 		_samples: [null],
 		_fonts: [null],
 		_ccanvas: null,
@@ -32,16 +33,26 @@ var AllegroJS = {
 			ALLEG._fonts[0] = font;
 			ALLEG._ccanvas = ALLEG._alloc_pack_bitmap(0);
 		},
+		_pack_bitmap: function(handle) {
+			var addr = ALLEG._bitmap_addrs[handle];
+			setValue(addr, handle, "i32");
+			setValue(addr+4, ALLEG._bitmaps[handle].w, "i32");
+			setValue(addr+8, ALLEG._bitmaps[handle].h, "i32");
+		},
 		_alloc_pack_bitmap: function(handle) {
 			var res = _malloc(3*4);
-			setValue(res, handle, "i32");
-			setValue(res+4, ALLEG._bitmaps[handle].w, "i32");
-			setValue(res+8, ALLEG._bitmaps[handle].h, "i32");
+			ALLEG._bitmap_addrs[handle] = res;
+			ALLEG._pack_bitmap(handle);
 			return res;
+		},
+		_repack_bitmaps: function() { // called by _ready when ready returns
+			for (var it=1; it<ALLEG._bitmaps.length; it++) {
+				ALLEG._pack_bitmap(it);
+			}
 		},
 		_unpack_bitmap: function(ptr) {
 			return getValue(ptr, "i32");
-		},
+		}
 	},
 
 	// GLOBALS, as functions because globals are no longer supported in emscripten (too bad)
@@ -89,7 +100,9 @@ var AllegroJS = {
 					writeArrayToMemory(keys, ALLEG._ckeys);
 					writeArrayToMemory(pressed, ALLEG._cpressed);
 					writeArrayToMemory(released, ALLEG._creleased);
-					p();
+					var stack = Runtime.stackSave();
+					Runtime.dynCall('v', p, null);
+					Runtime.stackRestore(stack);
 				},
 				speed
 			);
@@ -98,7 +111,24 @@ var AllegroJS = {
 		}
 	},
 	c_loading_bar: loading_bar,
-	c_ready: ready,
+	c_ready: function(p, b) {
+		var procedure = function() {
+			ALLEG._repack_bitmaps();
+			var stack = Runtime.stackSave();
+			Runtime.dynCall('v', p, null);
+			Runtime.stackRestore(stack);
+		};
+		if (b) {
+			var bar = function() {
+				var stack = Runtime.stackSave();
+				Runtime.dynCall('v', b, null);
+				Runtime.stackRestore(stack);
+			};
+			ready(procedure, bar);
+		} else {
+			ready(procedure, null);
+		}
+	},
 	c_remove_int: remove_int,
 	c_remove_all_ints: remove_all_ints,
 
@@ -112,10 +142,12 @@ var AllegroJS = {
 		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(create_bitmap(width, height)) - 1);
 	},
 	c_load_bitmap: function(filename) {
-		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bitmap(filename)) - 1);
+		var filename_s = Pointer_stringify(filename);
+		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bitmap(filename_s)) - 1);
 	},
 	c_load_bmp: function(filename) {
-		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bmp(filename)) - 1);
+		var filename_s = Pointer_stringify(filename);
+		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bmp(filename_s)) - 1);
 	},
 
 	c_set_gfx_mode: function(canvas_id, w, h) {
