@@ -40,7 +40,7 @@ extern int hide_mouse(void);
 typedef void (*procedure)(void);
 typedef void (*bar)(float progress);
 extern void install_timer(void);
-extern long time(void);
+extern long altime(void);
 extern void install_int(procedure p, long msec);
 extern void install_int_ex(procedure p, long speed);
 extern void loop(procedure p, long speed);

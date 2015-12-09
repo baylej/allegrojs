@@ -99,7 +99,7 @@ var AllegroJS = {
 	hide_mouse: hide_mouse,
 
 	install_timer: install_timer,
-	time: time,
+	altime: time,
 	install_int: function(p, msec) {
 		var procedure = function() {
 			var stack = Runtime.stackSave();
