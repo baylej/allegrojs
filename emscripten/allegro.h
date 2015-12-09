@@ -11,26 +11,26 @@ extern "C" {
 #endif
 
 /* CONFIGURATION ROUTINES */
-extern void c_install_allegro(void);
-extern void c_allegro_init(void);
-extern void c_allegro_init_all(const char *canvas_id, int w, int h, int menu, int *enable_keys);
+extern void install_allegro(void);
+extern void allegro_init(void);
+extern void allegro_init_all(const char *canvas_id, int w, int h, int menu, int *enable_keys);
 #define END_OF_MAIN()
 
 /* MOUSE ROUTINES */
-extern int c_mouse_b(void);
-extern int c_mouse_pressed(void);
-extern int c_mouse_released(void);
-extern int c_mouse_x(void);
-extern int c_mouse_y(void);
-extern int c_mouse_z(void);
-extern int c_mouse_mx(void);
-extern int c_mouse_my(void);
-extern int c_mouse_mz(void);
+extern int mouse_b(void);
+extern int mouse_pressed(void);
+extern int mouse_released(void);
+extern int mouse_x(void);
+extern int mouse_y(void);
+extern int mouse_z(void);
+extern int mouse_mx(void);
+extern int mouse_my(void);
+extern int mouse_mz(void);
 
-extern int c_install_mouse(int menu);
-extern int c_remove_mouse(void);
-extern int c_show_mouse(void);
-extern int c_hide_mouse(void);
+extern int install_mouse(int menu);
+extern int remove_mouse(void);
+extern int show_mouse(void);
+extern int hide_mouse(void);
 
 /* TIMER ROUTINES */
 #define SECS_TO_TIMER(secs) ( secs*1000 )
@@ -39,15 +39,15 @@ extern int c_hide_mouse(void);
 #define  BPM_TO_TIMER(bpm)  ( 60*1000./(float)bpm )
 typedef void (*procedure)(void);
 typedef void (*bar)(float progress);
-extern void c_install_timer(void);
-extern long c_time(void);
-extern void c_install_int(procedure p, long msec);
-extern void c_install_int_ex(procedure p, long speed);
-extern void c_loop(procedure p, long speed);
-extern void c_loading_bar(float progress);
-extern void c_ready(procedure p, bar b);
-extern void c_remove_int(procedure p);
-extern void c_remove_all_ints(void);
+extern void install_timer(void);
+extern long time(void);
+extern void install_int(procedure p, long msec);
+extern void install_int_ex(procedure p, long speed);
+extern void loop(procedure p, long speed);
+extern void loading_bar(float progress);
+extern void ready(procedure p, bar b);
+extern void remove_int(procedure p);
+extern void remove_all_ints(void);
 
 /* KEYBOARD ROUTINES */
 const char KEY_A = 0x41, KEY_B = 0x42, KEY_C = 0x43, KEY_D = 0x44, KEY_E = 0x45, KEY_F = 0x46, KEY_G = 0x47,
@@ -69,26 +69,26 @@ const char KEY_A = 0x41, KEY_B = 0x42, KEY_C = 0x43, KEY_D = 0x44, KEY_E = 0x45,
            KEY_EQUALS_PAD = 0x0C, KEY_LSHIFT = 0x10, KEY_RSHIFT = 0x10, KEY_LCONTROL = 0x11, KEY_RCONTROL = 0x11,
            KEY_ALT = 0x12, KEY_ALTGR = 0x12, KEY_LWIN = 0x5b, KEY_RWIN = 0x5c, KEY_MENU = 0x5d, KEY_SCRLOCK = 0x9d,
            KEY_NUMLOCK = 0x90, KEY_CAPSLOCK = 0x14;
-extern int* c_key(void);
-extern int* c_pressed(void);
-extern int* c_released(void);
-extern int c_install_keyboard(int *enable_keys);
-extern int c_remove_keyboard(void);
+extern int* key(void);
+extern int* pressed(void);
+extern int* released(void);
+extern int install_keyboard(int *enable_keys);
+extern int remove_keyboard(void);
 
 /* BITMAP ROUTINES */
 typedef struct {
 	int handle;
 	int w, h;
 } BITMAP_OBJECT;
-extern BITMAP_OBJECT* c_create_bitmap(int width, int height);
-extern BITMAP_OBJECT* c_load_bitmap(const char *filename);
-extern BITMAP_OBJECT* c_load_bmp(const char *filename);
+extern BITMAP_OBJECT* create_bitmap(int width, int height);
+extern BITMAP_OBJECT* load_bitmap(const char *filename);
+extern BITMAP_OBJECT* load_bmp(const char *filename);
 
 /* GRAPHICS MODES */
-extern BITMAP_OBJECT* c_canvas(void);
-extern int c_SCREEN_W(void);
-extern int c_SCREEN_H(void);
-extern int c_set_gfx_mode(const char *canvas_id, int width, int height);
+extern BITMAP_OBJECT* canvas(void);
+extern int SCREEN_W(void);
+extern int SCREEN_H(void);
+extern int set_gfx_mode(const char *canvas_id, int width, int height);
 
 /* DRAWING PRIMITIVES */
 #define   PI = 3.14159265
@@ -98,88 +98,88 @@ extern int c_set_gfx_mode(const char *canvas_id, int width, int height);
 #define PI_4 = 0.7853981625
 #define RAD(d) ( -d*PI/180.0 )
 #define DEG(r) ( -r*180.0/PI )
-extern int c_makecol(char r, char g, char b, char a);
-extern int c_makecolf(float r, float g, float b, float a);
-extern char c_getr(int colour);
-extern char c_getg(int colour);
-extern char c_getb(int colour);
-extern char c_geta(int colour);
-extern float c_getrf(int colour);
-extern float c_getgf(int colour);
-extern float c_getbf(int colour);
-extern float c_getaf(int colour);
-extern int c_getpixel(BITMAP_OBJECT *bitmap, int x, int y);
-extern void c_putpixel(BITMAP_OBJECT *bitmap, int x, int y, int colour);
-extern void c_clear_bitmap(BITMAP_OBJECT *bitmap);
-extern void c_clear_to_color(BITMAP_OBJECT *bitmap, int colour);
-extern void c_line(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour, int width);
-extern void c_vline(BITMAP_OBJECT *bitmap, int x, int y1, int y2, int colour, int width);
-extern void c_hline(BITMAP_OBJECT *bitmap, int x1, int y, int x2, int colour, int width);
-extern void c_triangle(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int x3, int y3, int colour, int width);
-extern void c_trianglefill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int x3, int y3, int colour);
-extern void c_polygon(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour, int width);
-extern void c_polygonfill(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour);
-extern void c_rect(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour, int width);
-extern void c_rectfill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour);
-extern void c_circle(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour, int width);
-extern void c_circlefill(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour);
-extern void c_arc(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2, int radius, int colour, int width);
-extern void c_arcfill(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2, int radius, int colour);
+extern int makecol(char r, char g, char b, char a);
+extern int makecolf(float r, float g, float b, float a);
+extern char getr(int colour);
+extern char getg(int colour);
+extern char getb(int colour);
+extern char geta(int colour);
+extern float getrf(int colour);
+extern float getgf(int colour);
+extern float getbf(int colour);
+extern float getaf(int colour);
+extern int getpixel(BITMAP_OBJECT *bitmap, int x, int y);
+extern void putpixel(BITMAP_OBJECT *bitmap, int x, int y, int colour);
+extern void clear_bitmap(BITMAP_OBJECT *bitmap);
+extern void clear_to_color(BITMAP_OBJECT *bitmap, int colour);
+extern void line(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour, int width);
+extern void vline(BITMAP_OBJECT *bitmap, int x, int y1, int y2, int colour, int width);
+extern void hline(BITMAP_OBJECT *bitmap, int x1, int y, int x2, int colour, int width);
+extern void triangle(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int x3, int y3, int colour, int width);
+extern void trianglefill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int x3, int y3, int colour);
+extern void polygon(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour, int width);
+extern void polygonfill(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour);
+extern void rect(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour, int width);
+extern void rectfill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour);
+extern void circle(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour, int width);
+extern void circlefill(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour);
+extern void arc(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2, int radius, int colour, int width);
+extern void arcfill(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2, int radius, int colour);
 
 /* BLITTING AND SPRITES */
-extern void c_draw_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y);
-extern void c_stretch_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int w, int h);
-extern void c_rotate_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle);
-extern void c_pivot_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle);
-extern void c_rotate_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle, float scale);
-extern void c_pivot_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle, float scale);
-extern void c_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int dx, int dy, int w, int h);
-extern void c_stretch_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
+extern void draw_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y);
+extern void stretch_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int w, int h);
+extern void rotate_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle);
+extern void pivot_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle);
+extern void rotate_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle, float scale);
+extern void pivot_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle, float scale);
+extern void blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int dx, int dy, int w, int h);
+extern void stretch_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
 
 /* TEXT OUTPUT */
 typedef int FONT_OBJECT;
-extern FONT_OBJECT* c_font(void);
-extern FONT_OBJECT* c_load_font(char *filename);
-extern FONT_OBJECT* c_create_font(char *family);
-extern void c_textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
-extern void c_textout_centre(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
-extern void c_textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
+extern FONT_OBJECT* font(void);
+extern FONT_OBJECT* load_font(char *filename);
+extern FONT_OBJECT* create_font(char *family);
+extern void textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
+extern void textout_centre(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
+extern void textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
 
 /* SOUND ROUTINES */
 typedef int SAMPLE_OBJECT;
-extern void c_install_sound(void);
-extern void c_set_volume(float volume);
-extern float c_get_volume(void);
-extern SAMPLE_OBJECT* c_load_sample(char *filename);
-extern void c_destroy_sample(char *filename);
-extern void c_play_sample(SAMPLE_OBJECT *sample, float vol, float freq, int loop);
-extern void c_adjust_sample(SAMPLE_OBJECT *sample, float vol, float freq, int loop);
-extern void c_stop_sample(SAMPLE_OBJECT *sample);
-extern void c_pause_sample(SAMPLE_OBJECT *sample);
+extern void install_sound(void);
+extern void set_volume(float volume);
+extern float get_volume(void);
+extern SAMPLE_OBJECT* load_sample(char *filename);
+extern void destroy_sample(char *filename);
+extern void play_sample(SAMPLE_OBJECT *sample, float vol, float freq, int loop);
+extern void adjust_sample(SAMPLE_OBJECT *sample, float vol, float freq, int loop);
+extern void stop_sample(SAMPLE_OBJECT *sample);
+extern void pause_sample(SAMPLE_OBJECT *sample);
 
 /* HELPER MATH FUNCTIONS */
-extern unsigned short c_rand(void);
-extern int c_rand32(void);
-extern float c_frand(void);
+extern unsigned short rand16(void);
+extern int rand32(void);
+extern float frand(void);
 #define abs(a) ( (a<0)?(-a):(a) )
-extern float c_length(float x, float y);
-extern float c_distance(float x1, float y1, float x2, float y2);
-extern float c_distance2(float x1, float y1, float x2, float y2);
-extern float c_linedist(float ex1, float ey1, float ex2, float ey2, float x, float y);
-extern float c_lerp(float from, float to, float progress);
-extern float c_dot(float x1, float y1, float x2, float y2);
-extern int   c_sgn(float a);
-extern float c_angle(float x1, float y1, float x2, float y2);
-extern float c_anglediff(float a, float b);
-extern float c_clamp(float value, float min, float max);
-extern float c_scale(float value, float min, float max, float min2, float max2);
-extern float c_scaleclamp(float value, float min, float max, float min2, float max2);
+extern float length(float x, float y);
+extern float distance(float x1, float y1, float x2, float y2);
+extern float distance2(float x1, float y1, float x2, float y2);
+extern float linedist(float ex1, float ey1, float ex2, float ey2, float x, float y);
+extern float lerp(float from, float to, float progress);
+extern float dot(float x1, float y1, float x2, float y2);
+extern int   sgn(float a);
+extern float angle(float x1, float y1, float x2, float y2);
+extern float anglediff(float a, float b);
+extern float clamp(float value, float min, float max);
+extern float scale(float value, float min, float max, float min2, float max2);
+extern float scaleclamp(float value, float min, float max, float min2, float max2);
 
 /* DEBUG FUNCTIONS */
-extern int c_ALLEGRO_CONSOLE;
-extern void c_enable_debug(const char *id);
-extern void c_log(const char *string);
-extern void c_wipe_log(void);
+extern int ALLEGRO_CONSOLE;
+extern void enable_debug(const char *id);
+extern void logmsg(const char *string);
+extern void wipe_log(void);
 
 #ifdef __cplusplus
 }
