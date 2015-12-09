@@ -121,7 +121,14 @@ var AllegroJS = {
 				speed
 			);
 		} else {
-			loop(p, speed);
+			loop(
+				function() {
+					var stack = Runtime.stackSave();
+					Runtime.dynCall('v', p, null);
+					Runtime.stackRestore(stack);
+				},
+				speed
+			);
 		}
 	},
 	c_loading_bar: loading_bar,
