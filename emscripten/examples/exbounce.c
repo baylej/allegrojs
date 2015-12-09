@@ -22,9 +22,8 @@ void draw(void)
 	// draw allegro logo background
 	stretch_blit(logo, canvas(), 0, 0, logo->w, logo->h, 0, 0, SCREEN_W(), SCREEN_H());
 
-	// draws the ball resized to size*size, centered
-	// stretch it a bit vertically according to velocity
-	stretch_sprite(canvas(), ball, cx-size/2., cy-size/2., size, size+abs(vy));
+	// draws the ball centered
+	draw_sprite(canvas(),ball,cx,cy);
 }
 
 // update game logic
@@ -36,10 +35,10 @@ void update(void)
 	// if the ball is going to collide with screen bounds
 	// after applying velocity, if so, reverse velocity
 	// and remember that it bonced
-	if (cx+vx>SCREEN_W()-size/2.) {vx=-speed;bounced=1;}
-	if (cy+vy>SCREEN_H()-size/2.) {vy=-speed*3;bounced=1;}
-	if (cx+vx<size/2.) {vx=speed;bounced=1;}
-	if (cy+vy<size/2.) {vy=speed;bounced=1;}
+	if (cx+vx>SCREEN_W()) {vx=-speed;bounced=1;}
+	if (cy+vy>SCREEN_H()) {vy=-speed*3;bounced=1;}
+	if (cx+vx<0) {vx=speed;bounced=1;}
+	if (cy+vy<0) {vy=speed;bounced=1;}
 
 	// move the ball
 	cx+=vx;

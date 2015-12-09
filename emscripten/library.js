@@ -265,8 +265,8 @@ var AllegroJS = {
 	draw_sprite: function(bmp, sprite, x, y) {
 		draw_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y);
 	},
-	stretch_sprite: function(bmp, sprite, x, y, w, h) {
-		stretch_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, w, h);
+	scaled_sprite: function(bmp, sprite, x, y, sx, sy) {
+		scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, sx, sy);
 	},
 	rotate_sprite: function(bmp, sprite, x, y, angle) {
 		rotate_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, angle);
@@ -274,19 +274,26 @@ var AllegroJS = {
 	pivot_sprite: function(bmp, sprite, x, y, cx, cy, angle) {
 		pivot_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, cx, cy, angle);
 	},
-	rotate_scaled_sprite: function(bmp, sprite, x, y, angle, scale) {
-		rotate_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, angle, scale);
+	rotate_scaled_sprite: function(bmp, sprite, x, y, angle, sx, sy) {
+		rotate_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, angle, sx, sy);
 	},
-	pivot_scaled_sprite: function(bmp, sprite, x, y, cx, cy, angle, scale) {
-		pivot_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, cx, cy, angle, scale);
+	pivot_scaled_sprite: function(bmp, sprite, x, y, cx, cy, angle, sx, sy) {
+		pivot_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, cx, cy, angle, sx, sy);
 	},
 	blit: function(source, dest, sx, sy, dx, dy, w, h) {
 		blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], sx, sy, dx, dy, w, h);
+	},
+	simple_blit: function(source, dest, x, y) {
+		simple_blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], x, y);
 	},
 	stretch_blit: function(source, dest, sx, sy, sw, sh, dx, dy, dw, dh) {
 		stretch_blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], sx, sy, sw, sh, dx, dy, dw, dh);
 	},
 
+	load_base64_font: function(data) {
+		var data_s = Pointer_stringify(data);
+		return ALLEG._fonts.push(load_base64_font(data_s));
+	},
 	load_font: function(filename) {
 		var filename_s = Pointer_stringify(filename);
 		return ALLEG._fonts.push(load_font(filename_s)) - 1;

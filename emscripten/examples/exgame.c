@@ -21,7 +21,7 @@ int score = 0;
 void draw(void)
 {
 	// draw background
-	draw_sprite(canvas(), bg, 0, 0);
+	simple_blit(bg, canvas(), 0, 0);
 
 	// draw player
 	draw_sprite(canvas(), man, player_x, player_y);
@@ -32,7 +32,7 @@ void draw(void)
 	// print out current score
 	char str[25];
 	snprintf(str, 25, "Score: %d", score);
-	textout(canvas(), font(), str, 10, 20, 24, makecol(255,255,255,255), 0, 0);
+	textout(canvas(), font(), str, 10, 30, 24, makecol(255,255,255,255), makecol(0,0,0,255), 1);
 }
 
 // update gaem logic

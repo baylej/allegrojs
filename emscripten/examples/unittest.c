@@ -58,8 +58,8 @@ void draw(void) {
 		draw_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H());
 	}
 	else if (stage==4) {
-		title = "stretch_sprite";
-		stretch_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%SCREEN_W()+1, rand16()%SCREEN_H()+1);
+		title = "scaled_sprite";
+		scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==5) {
 		title = "rotate_sprite";
@@ -71,11 +71,11 @@ void draw(void) {
 	}
 	else if (stage==7) {
 		title = "rotate_scaled_sprite";
-		rotate_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360, rand16()%3+.1);
+		rotate_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360, frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==8) {
 		title = "pivot_scaled_sprite";
-		pivot_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%mysha->w, rand16()%mysha->h, rand16()%360, rand16()%3+.1);
+		pivot_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%mysha->w, rand16()%mysha->h, rand16()%360, frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==9) {
 		title = "textout";
@@ -232,8 +232,8 @@ void draw(void) {
 		stage++;
 	}
 
-	textout_centre(canvas(), font(), title, SCREEN_W()/2, 64, 64, makecol(255, 0, 0, 255), 0, 0);
-	textout(canvas(), font(), subtitle, 10, SCREEN_H()-10, 24, makecol(255, 0, 0, 255), 0, 0);
+	textout_centre(canvas(), font(), title, SCREEN_W()/2, 64, 64, makecol(255, 255, 255, 255), makecol(0, 0, 0, 255), 2);
+	textout(canvas(), font(), subtitle, 10, SCREEN_H()-10, 24, makecol(255, 255, 255, 255), makecol(0, 0, 0, 255), 1);
 	delay++;
 	if (key()[KEY_SPACE] && delay>10)
 	{

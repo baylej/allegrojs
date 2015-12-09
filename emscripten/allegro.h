@@ -128,17 +128,19 @@ extern void arcfill(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2,
 
 /* BLITTING AND SPRITES */
 extern void draw_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y);
-extern void stretch_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int w, int h);
+extern void scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int sx, int sy);
 extern void rotate_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle);
 extern void pivot_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle);
-extern void rotate_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle, float scale);
-extern void pivot_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle, float scale);
+extern void rotate_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle, float sx, float sy);
+extern void pivot_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle, float sx, float sy);
 extern void blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int dx, int dy, int w, int h);
+extern void simple_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int x, int y);
 extern void stretch_blit(BITMAP_OBJECT *source, BITMAP_OBJECT *dest, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
 
 /* TEXT OUTPUT */
 typedef int FONT_OBJECT;
 extern FONT_OBJECT* font(void);
+extern FONT_OBJECT* load_base64_font(char *data);
 extern FONT_OBJECT* load_font(char *filename);
 extern FONT_OBJECT* create_font(char *family);
 extern void textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, const char *string, int x, int y, int size, int colour, int outline, int width);
