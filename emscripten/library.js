@@ -266,17 +266,19 @@ var AllegroJS = {
 	},
 	c_create_font: function(family) {
 		var family_s = Pointer_stringify(family);
-		return ALLEG._fonts.push(create_font(family_s));
+		return ALLEG._fonts.push(create_font(family_s)) - 1;
 	},
 	c_textout: function(b, f, s, x, y, size, col, outline, width) {
-		textout(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], s, x, y, size, col, outline, width);
+		var str = Pointer_stringify(s);
+		textout(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
 	},
 	c_textout_centre: function(b, f, s, x, y, size, col, outline, width) {
 		var str = Pointer_stringify(s);
 		textout_centre(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
 	},
 	c_textout_right: function(b, f, s, x, y, size, col, outline, width) {
-		textout_right(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], s, x, y, size, col, outline, width);
+		var str = Pointer_stringify(s);
+		textout_right(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
 	},
 
 	c_install_sound: install_sound,
@@ -318,8 +320,12 @@ var AllegroJS = {
 	c_scale: scale,
 	c_scaleclamp: scaleclamp,
 
-	c_enable_debug: enable_debug,
-	c_log: log,
+	c_enable_debug: function(debug_id) {
+		enable_debug(Pointer_stringify(debug_id));
+	},
+	c_log: function(s) {
+		enable_debug(Pointer_stringify(s));
+	},
 	c_wipe_log: wipe_log
 };
 
