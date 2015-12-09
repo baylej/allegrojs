@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "allegro.h"
+#include <allegro.h>
 
 //bitmap objects
 BITMAP_OBJECT *man, *apple, *bg;

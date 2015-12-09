@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "allegro.h"
+#include <allegro.h>
 
 // Globally declared bitmap object
 BITMAP_OBJECT *logo;

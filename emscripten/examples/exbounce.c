@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "allegro.h"
+#include <allegro.h>
 
 // bitmap objects
 BITMAP_OBJECT *logo, *ball;
