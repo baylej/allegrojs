@@ -19,14 +19,19 @@ var AllegroJS = {
 		_creleased: null,
 
 		// PRIVATE FUNCTIONS
+		_writeArray32ToMemory: function(array, buffer) {
+			for (var i=0; i<array.length; i++) {
+				HEAP32[((buffer+i*4)>>2)]=array[i];
+			}
+		},
 		_post_install_keyboard: function() {
 			ALLEG._keyboard_installed = true;
 			ALLEG._ckey = _malloc(4 * key.length);
-			writeArrayToMemory(key, ALLEG._ckey);
+			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
 			ALLEG._cpressed = _malloc(4 * pressed.length);
-			writeArrayToMemory(pressed, ALLEG._cpressed);
+			ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
 			ALLEG._creleased = _malloc(4 * released.length);
-			writeArrayToMemory(released, ALLEG._creleased);
+			ALLEG._writeArray32ToMemory(released, ALLEG._creleased);
 		},
 		_post_set_gfx_mode: function() {
 			ALLEG._bitmaps[0] = canvas;
@@ -111,9 +116,9 @@ var AllegroJS = {
 		if (ALLEG._keyboard_installed) {
 			loop(
 				function() {
-					writeArrayToMemory(key, ALLEG._ckey);
-					writeArrayToMemory(pressed, ALLEG._cpressed);
-					writeArrayToMemory(released, ALLEG._creleased);
+					ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
+					ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
+					ALLEG._writeArray32ToMemory(released, ALLEG._creleased);
 					var stack = Runtime.stackSave();
 					Runtime.dynCall('v', p, null);
 					Runtime.stackRestore(stack);
