@@ -243,11 +243,11 @@ var AllegroJS = {
 		var points_arr = ALLEG._ReadArray32FromMemory(points, vertices);
 		polygonfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points_arr, colour);
 	},
-	rect: function(bitmap, x1, y1, x2, y2, colour, width) {
-		rect(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, colour, width);
+	rect: function(bitmap, x, y, w, h, colour, width) {
+		rect(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, w, h, colour, width);
 	},
-	rectfill: function(bitmap, x1, y1, x2, y2, colour) {
-		rectfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, colour);
+	rectfill: function(bitmap, x, y, w, h, colour) {
+		rectfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, w, h, colour);
 	},
 	circle: function(bitmap, x, y, radius, colour, width) {
 		circle(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, radius, colour, width);

@@ -119,8 +119,8 @@ extern void triangle(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int 
 extern void trianglefill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int x3, int y3, int colour);
 extern void polygon(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour, int width);
 extern void polygonfill(BITMAP_OBJECT *bitmap, int vertices, const int *points, int colour);
-extern void rect(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour, int width);
-extern void rectfill(BITMAP_OBJECT *bitmap, int x1, int y1, int x2, int y2, int colour);
+extern void rect(BITMAP_OBJECT *bitmap, int x, int y, int w, int h, int colour, int width);
+extern void rectfill(BITMAP_OBJECT *bitmap, int x, int y, int w, int h, int colour);
 extern void circle(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour, int width);
 extern void circlefill(BITMAP_OBJECT *bitmap, int x, int y, int radius, int colour);
 extern void arc(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2, int radius, int colour, int width);
