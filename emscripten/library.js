@@ -141,9 +141,9 @@ var AllegroJS = {
 			Runtime.stackRestore(stack);
 		};
 		if (b) {
-			var bar = function() {
+			var bar = function(f) {
 				var stack = Runtime.stackSave();
-				Runtime.dynCall('vf', b, null);
+				Runtime.dynCall('vf', b, [allocate([f], 'float', ALLOC_STACK)]);
 				Runtime.stackRestore(stack);
 			};
 			ready(procedure, bar);
