@@ -141,9 +141,9 @@ typedef int FONT_OBJECT;
 extern FONT_OBJECT* font(void);
 extern FONT_OBJECT* load_font(char *filename);
 extern FONT_OBJECT* create_font(char *family);
-extern void textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
-extern void textout_centre(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
-extern void textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, char *string, int x, int y, int size, int colour, int outline, int width);
+extern void textout(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, const char *string, int x, int y, int size, int colour, int outline, int width);
+extern void textout_centre(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, const char *string, int x, int y, int size, int colour, int outline, int width);
+extern void textout_right(BITMAP_OBJECT *bitmap, FONT_OBJECT *font, const char *string, int x, int y, int size, int colour, int outline, int width);
 
 /* SOUND ROUTINES */
 typedef int SAMPLE_OBJECT;
