@@ -262,7 +262,7 @@ var AllegroJS = {
 
 	c_load_font: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._fonts.push(load_font(filename_s));
+		return ALLEG._fonts.push(load_font(filename_s)) - 1;
 	},
 	c_create_font: function(family) {
 		var family_s = Pointer_stringify(family);
@@ -284,7 +284,7 @@ var AllegroJS = {
 	c_get_volume: get_volume,
 	c_load_sample: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._samples.push(load_sample(filename_s));
+		return ALLEG._samples.push(load_sample(filename_s)) - 1;
 	},
 	c_destroy_sample: function(sample) {
 		destroy_sample(ALLEG._samples[sample]);
