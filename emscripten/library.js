@@ -1,5 +1,7 @@
 /**
-	include allegro.js or alleg.js before including this file!
+	You must concatenate allegro.js and this file before you try to use
+	this file as an emscripten JS library.
+	cat ../allegro.js > lib.js && cat library.js >> lib.js
 
 	I'm an emscripten library, the “glue” code between C and JS
 **/
@@ -84,6 +86,8 @@ var AllegroJS = {
 	allegro_init: allegro_init,
 	allegro_init_all: function(id, w, h, menu, enable_keys) {
 		var cid_s = Pointer_stringify(id);
+		// We have to reset `key` here because emscripten use the key variable in src/shell.js
+		key = [];
 		allegro_init_all(cid_s, w, h, menu, []); // FIXME: enable_keys to JS array
 		ALLEG._post_install_keyboard();
 		ALLEG._post_set_gfx_mode();
@@ -162,6 +166,8 @@ var AllegroJS = {
 	remove_all_ints: remove_all_ints,
 
 	install_keyboard: function(enable_keys) {
+		// We have to reset `key` here because emscripten use the key variable in src/shell.js
+		key = [];
 		install_keyboard([]); // FIXME: enable_keys to JS array
 		ALLEG._post_install_keyboard();
 	},
