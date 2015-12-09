@@ -14,15 +14,15 @@ var AllegroJS = {
 		_fonts: [null],
 		_ccanvas: null,
 		_keyboard_installed: false,
-		_ckeys: null,
+		_ckey: null,
 		_cpressed: null,
 		_creleased: null,
 
 		// PRIVATE FUNCTIONS
 		_post_install_keyboard: function() {
 			ALLEG._keyboard_installed = true;
-			ALLEG._ckeys = _malloc(4 * keys.length);
-			writeArrayToMemory(keys, ALLEG._ckeys);
+			ALLEG._ckey = _malloc(4 * key.length);
+			writeArrayToMemory(key, ALLEG._ckey);
 			ALLEG._cpressed = _malloc(4 * pressed.length);
 			writeArrayToMemory(pressed, ALLEG._cpressed);
 			ALLEG._creleased = _malloc(4 * released.length);
@@ -65,7 +65,7 @@ var AllegroJS = {
 	c_mouse_mx: function() { return mouse_mx; },
 	c_mouse_my: function() { return mouse_my; },
 	c_mouse_mz: function() { return mouse_mz; },
-	c_key: function() { return ALLEG._ckeys; },
+	c_key: function() { return ALLEG._ckey; },
 	c_pressed: function() { return ALLEG._cpressed; },
 	c_released: function() { return ALLEG._creleased; },
 	c_canvas: function() { return ALLEG._ccanvas; },
@@ -111,7 +111,7 @@ var AllegroJS = {
 		if (ALLEG._keyboard_installed) {
 			loop(
 				function() {
-					writeArrayToMemory(keys, ALLEG._ckeys);
+					writeArrayToMemory(key, ALLEG._ckey);
 					writeArrayToMemory(pressed, ALLEG._cpressed);
 					writeArrayToMemory(released, ALLEG._creleased);
 					var stack = Runtime.stackSave();
@@ -261,10 +261,12 @@ var AllegroJS = {
 	},
 
 	c_load_font: function(filename) {
-		return ALLEG._fonts.push(load_font(filename));
+		var filename_s = Pointer_stringify(filename);
+		return ALLEG._fonts.push(load_font(filename_s));
 	},
 	c_create_font: function(family) {
-		return ALLEG._fonts.push(create_font(family));
+		var family_s = Pointer_stringify(family);
+		return ALLEG._fonts.push(create_font(family_s));
 	},
 	c_textout: function(b, f, s, x, y, size, col, outline, width) {
 		textout(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], s, x, y, size, col, outline, width);
@@ -281,7 +283,8 @@ var AllegroJS = {
 	c_set_volume: set_volume,
 	c_get_volume: get_volume,
 	c_load_sample: function(filename) {
-		return ALLEG._samples.push(load_sample(filename));
+		var filename_s = Pointer_stringify(filename);
+		return ALLEG._samples.push(load_sample(filename_s));
 	},
 	c_destroy_sample: function(sample) {
 		destroy_sample(ALLEG._samples[sample]);
