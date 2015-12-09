@@ -26,6 +26,13 @@ var AllegroJS = {
 				HEAP32[((buffer+i*4)>>2)]=array[i];
 			}
 		},
+		_ReadArray32FromMemory: function(buffer, length) {
+			var res = [];
+			for (var i=0; i<length; i++) {
+				res.push(HEAP32[((buffer+i*4)>>2)]);
+			}
+			return res;
+		},
 		_post_install_keyboard: function() {
 			ALLEG._keyboard_installed = true;
 			ALLEG._ckey = _malloc(4 * key.length);
@@ -229,10 +236,12 @@ var AllegroJS = {
 		trianglefill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, x3, y3, colour);
 	},
 	polygon: function(bitmap, vertices, points, colour, width) {
-		polygon(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points, colour, width);
+		var points_arr = ALLEG._ReadArray32FromMemory(points, vertices);
+		polygon(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points_arr, colour, width);
 	},
 	polygonfill: function(bitmap, vertices, points, colour) {
-		polygonfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points, colour);
+		var points_arr = ALLEG._ReadArray32FromMemory(points, vertices);
+		polygonfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points_arr, colour);
 	},
 	rect: function(bitmap, x1, y1, x2, y2, colour, width) {
 		rect(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, colour, width);
