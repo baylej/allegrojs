@@ -2,7 +2,7 @@
 #include <allegro.h>
 
 // bitmap objects
-BITMAP_OBJECT *logo, *ball;
+BITMAP_OBJECT *clouds, *ball;
 
 // sample object
 SAMPLE_OBJECT *bounce;
@@ -19,8 +19,8 @@ float vx=speed, vy=speed;
 // drawing function
 void draw(void)
 {
-	// draw allegro logo background
-	stretch_blit(logo, canvas(), 0, 0, logo->w, logo->h, 0, 0, SCREEN_W(), SCREEN_H());
+	// draw allegro clouds background
+	stretch_blit(clouds, canvas(), 0, 0, clouds->w, clouds->h, 0, 0, SCREEN_W(), SCREEN_H());
 
 	// draws the ball centered
 	draw_sprite(canvas(),ball,cx,cy);
@@ -72,15 +72,17 @@ int main(void)
 	// enable debugging to console element
 	enable_debug("output");
 
-	// init all subsystems, put allegro in canvas with id="canvas_id"
+	// put allegro in canvas with id="canvas"
 	// make the dimesnions 640x480
-	allegro_init_all("canvas", 640, 480, 0, NULL);
+	set_gfx_mode("canvas", 640, 480);
+
+	install_sound();
 
 	// load ball image
 	ball = load_bmp("data/planet.png");
 
 	// load background image
-	logo = load_bmp("data/allegro.png");
+	clouds = load_bmp("data/clouds.png");
 
 	// load the bounce sound
 	bounce = load_sample("data/bounce.mp3");

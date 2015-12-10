@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <allegro.h>
 
-BITMAP_OBJECT *mysha;
+BITMAP_OBJECT *clouds, *ball;
 SAMPLE_OBJECT *beep;
 
 int stage = -1;
@@ -47,35 +47,35 @@ void draw(void) {
 	}
 	else if (stage==1) {
 		title = "blit";
-		blit(mysha, canvas(), 0, 0, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%mysha->w+1, rand16()%mysha->h+1);
+		blit(ball, canvas(), 0, 0, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%ball->w+1, rand16()%ball->h+1);
 	}
 	else if (stage==2) {
 		title = "stretch_blit";
-		stretch_blit(mysha, canvas(), 0, 0, rand16()%mysha->w+1, rand16()%mysha->h+1, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%SCREEN_W()+1, rand16()%SCREEN_H()+1);
+		stretch_blit(ball, canvas(), 0, 0, rand16()%ball->w+1, rand16()%ball->h+1, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%SCREEN_W()+1, rand16()%SCREEN_H()+1);
 	}
 	else if (stage==3) {
 		title = "draw_sprite";
-		draw_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H());
+		draw_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H());
 	}
 	else if (stage==4) {
 		title = "scaled_sprite";
-		scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), frand()*2+.1, frand()*2+.1);
+		scaled_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H(), frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==5) {
 		title = "rotate_sprite";
-		rotate_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360);
+		rotate_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360);
 	}
 	else if (stage==6) {
 		title = "pivot_sprite";
-		pivot_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%mysha->w, rand16()%mysha->h, rand16()%360);
+		pivot_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%ball->w, rand16()%ball->h, rand16()%360);
 	}
 	else if (stage==7) {
 		title = "rotate_scaled_sprite";
-		rotate_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360, frand()*2+.1, frand()*2+.1);
+		rotate_scaled_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%360, frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==8) {
 		title = "pivot_scaled_sprite";
-		pivot_scaled_sprite(canvas(), mysha, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%mysha->w, rand16()%mysha->h, rand16()%360, frand()*2+.1, frand()*2+.1);
+		pivot_scaled_sprite(canvas(), ball, rand16()%SCREEN_W(), rand16()%SCREEN_H(), rand16()%ball->w, rand16()%ball->h, rand16()%360, frand()*2+.1, frand()*2+.1);
 	}
 	else if (stage==9) {
 		title = "textout";
@@ -237,7 +237,7 @@ void draw(void) {
 	delay++;
 	if (key()[KEY_SPACE] && delay>10)
 	{
-		stretch_blit(mysha, canvas(), 0, 0, mysha->w, mysha->h, 0, 0, SCREEN_W(), SCREEN_H());
+		stretch_blit(clouds, canvas(), 0, 0, clouds->w, clouds->h, 0, 0, SCREEN_W(), SCREEN_H());
 		stage++;
 		delay=0;
 	}
@@ -248,7 +248,7 @@ void in_loop(void) {
 }
 
 void when_ready(void) {
-	stretch_blit(mysha, canvas(), 0, 0, mysha->w, mysha->h, 0, 0, SCREEN_W(), SCREEN_H());
+	stretch_blit(clouds, canvas(), 0, 0, clouds->w, clouds->h, 0, 0, SCREEN_W(), SCREEN_H());
 	loop(in_loop, MSEC_TO_TIMER(60));
 }
 
@@ -256,7 +256,8 @@ int main(void) {
 	enable_debug("output");
 	allegro_init_all("canvas", 640, 480, 0, NULL);
 	timercolor = makecol(192, 168, 1, 254);
-	mysha = load_bmp("data/mysha.png");
+	clouds = load_bmp("data/clouds.png");
+	ball = load_bmp("data/planet.png");
 	beep = load_sample("data/dtmf.mp3");
 
 	ready(when_ready, NULL);

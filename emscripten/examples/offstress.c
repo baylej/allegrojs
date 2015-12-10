@@ -7,13 +7,13 @@
 int num=0, speed=3;
 float x[SPRITE_MAX], y[SPRITE_MAX], vx[SPRITE_MAX], vy[SPRITE_MAX];
 long last_time = 0;
-BITMAP_OBJECT *bmp;
+BITMAP_OBJECT *bmp, *buffer;
 
 void in_loop(void) {
-	clear_to_color(canvas(), makecol(255,255,255,255));
-
+	clear_to_color(buffer, makecol(255,255,255,255));
+			
 	for(int c=0; c<num; c++) {
-		draw_sprite(canvas(), bmp, x[c], y[c]);
+		draw_sprite(buffer, bmp, x[c], y[c]);
 		if (x[c]+vx[c] > SCREEN_W()) { vx[c] = -abs(vx[c]); }
 		if (y[c]+vy[c] > SCREEN_H()) { vy[c] = -abs(vy[c]); }
 		if (x[c]+vx[c] < -64)        { vx[c] =  abs(vx[c]); }
@@ -46,8 +46,9 @@ int main(void) {
 	enable_debug("output");
 	set_gfx_mode("canvas", 640, 480);
 	bmp = load_bmp("data/planet.png");
-
+	buffer = create_bitmap(SCREEN_W(), SCREEN_H());
 	ready(when_ready, NULL);
+
 	return 0;
 }
 END_OF_MAIN()
