@@ -7,24 +7,32 @@
 **/
 
 var AllegroJS = {
+	// PRIVATE STUFF
 	$ALLEG: {
 		// HANDLERS
-		// index 0 is reserved for default values
+		// Index 0 is reserved for default values
 		_bitmaps: [null],
 		_bitmap_addrs: [null],
 		_samples: [null],
 		_fonts: [null],
+		// POINTER TO CANVAS
 		_ccanvas: null,
+		// C ARRAY POINTERS
 		_ckey: null,
 		_cpressed: null,
 		_creleased: null,
+		_touch: null,
+		_touch_pressed: null,
+		_touch_released: null,
 
 		// PRIVATE FUNCTIONS
+		// Writes `array`(array of integers) to memory at address `buffer`
 		_writeArray32ToMemory: function(array, buffer) {
 			for (var i=0; i<array.length; i++) {
-				HEAP32[((buffer+i*4)>>2)]=array[i];
+				HEAP32[((buffer+i*4)>>2)] = array[i];
 			}
 		},
+		// Reads `length` integers from memory at address `buffer`
 		_ReadArray32FromMemory: function(buffer, length) {
 			var res = [];
 			for (var i=0; i<length; i++) {
@@ -32,36 +40,73 @@ var AllegroJS = {
 			}
 			return res;
 		},
+		// Creates C arrays storing key statuses
 		_post_install_keyboard: function() {
 			ALLEG._ckey = _malloc(4 * key.length);
-			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
 			ALLEG._cpressed = _malloc(4 * pressed.length);
-			ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
 			ALLEG._creleased = _malloc(4 * released.length);
+		},
+		// Creates C arrays storing touch structures
+		_post_install_touch: function() {
+			// limitation: maximum 32 touch object
+			ALLEG._touch = malloc(4*11*32);
+			ALLEG._touch_pressed = malloc(4*11*32);
+			ALLEG._touch_released = malloc(4*11*32);
+		},
+		// Writes JS key arrays to C memory
+		_copy_key_statuses: function() {
+			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
+			ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
 			ALLEG._writeArray32ToMemory(released, ALLEG._creleased);
 		},
+		// Writes JS touch arrays to C memory
+		_copy_touch_structs: function() {
+			var write_touch_array = function(array, buffer) {
+				for (var i=0; (i<array.length && i<32); i++) {
+					HEAP32[((buffer + i*11*4       )>>2)] = array[i].x;
+					HEAP32[((buffer + i*11*4 +    4)>>2)] = array[i].y;
+					HEAP32[((buffer + i*11*4 +  2*4)>>2)] = array[i].mx;
+					HEAP32[((buffer + i*11*4 +  3*4)>>2)] = array[i].my;
+					HEAP32[((buffer + i*11*4 +  4*4)>>2)] = array[i].px;
+					HEAP32[((buffer + i*11*4 +  5*4)>>2)] = array[i].py;
+					HEAP32[((buffer + i*11*4 +  6*4)>>2)] = array[i].sx;
+					HEAP32[((buffer + i*11*4 +  7*4)>>2)] = array[i].sy;
+					HEAP32[((buffer + i*11*4 +  8*4)>>2)] = array[i].id;
+					HEAP32[((buffer + i*11*4 +  9*4)>>2)] = array[i].age;
+					HEAP32[((buffer + i*11*4 + 10*4)>>2)] = array[i].dead;
+				}
+			};
+			write_touch_array(touch, ALLEG._touch);
+			write_touch_array(touch_pressed, ALLEG._touch_pressed);
+			write_touch_array(touch_released, ALLEG._touch_released);
+		},
+		// Creates `canvas` and `font` C globals
 		_post_set_gfx_mode: function() {
 			ALLEG._bitmaps[0] = canvas;
 			ALLEG._fonts[0] = font;
 			ALLEG._ccanvas = ALLEG._alloc_pack_bitmap(0);
 		},
+		// Stores bitmap infomations in a C bitmap struct
 		_pack_bitmap: function(handle) {
 			var addr = ALLEG._bitmap_addrs[handle];
 			setValue(addr, handle, "i32");
 			setValue(addr+4, ALLEG._bitmaps[handle].w, "i32");
 			setValue(addr+8, ALLEG._bitmaps[handle].h, "i32");
 		},
+		// Allocates and packs a bitmap for C
 		_alloc_pack_bitmap: function(handle) {
 			var res = _malloc(3*4);
 			ALLEG._bitmap_addrs[handle] = res;
 			ALLEG._pack_bitmap(handle);
 			return res;
 		},
-		_repack_bitmaps: function() { // called by _ready when ready returns
+		// Repacks every bitmaps (because bitmap loading is asynchronous) called by _ready
+		_repack_bitmaps: function() {
 			for (var it=1; it<ALLEG._bitmaps.length; it++) {
 				ALLEG._pack_bitmap(it);
 			}
 		},
+		// Returns the handle (array index for ALLEG._bitmaps) for the given bitmap struct pointed by `ptr`
 		_unpack_bitmap: function(ptr) {
 			return getValue(ptr, "i32");
 		}
@@ -77,6 +122,9 @@ var AllegroJS = {
 	mouse_mx: function() { return mouse_mx; },
 	mouse_my: function() { return mouse_my; },
 	mouse_mz: function() { return mouse_mz; },
+	touch: function(len) { setValue(len, touch.length, "i32"); return ALLEG._touch; },
+	touch_pressed: function(len) { setValue(len, touch_pressed.length, "i32"); return ALLEG._touch_pressed; },
+	touch_released: function(len) { setValue(len, touch_released.length, "i32"); return ALLEG._touch_released; },
 	key: function() { return ALLEG._ckey; },
 	pressed: function() { return ALLEG._cpressed; },
 	released: function() { return ALLEG._creleased; },
@@ -125,28 +173,20 @@ var AllegroJS = {
 		install_int_ex(procedure, speed);
 	},
 	loop: function(p, speed) {
-		if (_keyboard_installed) {
-			loop(
-				function() {
-					ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
-					ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
-					ALLEG._writeArray32ToMemory(released, ALLEG._creleased);
-					var stack = Runtime.stackSave();
-					Runtime.dynCall('v', p, null);
-					Runtime.stackRestore(stack);
-				},
-				speed
-			);
-		} else {
-			loop(
-				function() {
-					var stack = Runtime.stackSave();
-					Runtime.dynCall('v', p, null);
-					Runtime.stackRestore(stack);
-				},
-				speed
-			);
-		}
+		loop(
+			function() {
+				if (_keyboard_installed) {
+					ALLEG._copy_key_statuses();
+				}
+				if (_touch_installed) {
+					ALLEG._copy_touch_structs();
+				}
+				var stack = Runtime.stackSave();
+				Runtime.dynCall('v', p, null);
+				Runtime.stackRestore(stack);
+			},
+			speed
+		);
 	},
 	loading_bar: loading_bar,
 	ready: function(p, b) {
@@ -350,6 +390,7 @@ var AllegroJS = {
 		pause_sample(ALLEG._samples[sample]);
 	},
 
+	// rand renamed to rand16 because of name clashing in C source
 	rand16: rand,
 	rand32: rand32,
 	frand: frand,
@@ -369,7 +410,7 @@ var AllegroJS = {
 	enable_debug: function(debug_id) {
 		enable_debug(Pointer_stringify(debug_id));
 	},
-	// log() renamed to logmsg() due to name clashing in C source
+	// log() renamed to logmsg() because of name clashing in C source
 	logmsg: function(s) {
 		log(Pointer_stringify(s));
 	},

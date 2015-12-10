@@ -36,11 +36,11 @@ extern int hide_mouse(void);
 typedef struct {
 	int x, y, mx, my, px, py, sx, sy, id, age, dead;
 } TOUCH_OBJECT;
-extern TOUCH_OBJECT* touch(void);
-extern TOUCH_OBJECT* touch_pressed(void);
-extern TOUCH_OBJECT* touch_released(void);
-extern void install_touch();
-extern void remove_touch();
+extern TOUCH_OBJECT* touch(int *len);
+extern TOUCH_OBJECT* touch_pressed(int *len);
+extern TOUCH_OBJECT* touch_released(int *len);
+extern void install_touch(void);
+extern void remove_touch(void);
 
 /* TIMER ROUTINES */
 #define SECS_TO_TIMER(secs) ( secs*1000 )
