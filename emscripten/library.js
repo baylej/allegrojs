@@ -11,29 +11,29 @@ var AllegroJS = {
 	$ALLEG: {
 		// HANDLERS
 		// Index 0 is reserved for default values
-		_bitmaps: [null],
-		_bitmap_addrs: [null],
-		_samples: [null],
-		_fonts: [null],
+		bitmaps: [null],
+		bitmap_addrs: [null],
+		samples: [null],
+		fonts: [null],
 		// POINTER TO CANVAS
-		_ccanvas: null,
+		canvas: null,
 		// C ARRAY POINTERS
-		_ckey: null,
-		_cpressed: null,
-		_creleased: null,
-		_touch: null,
-		_touch_pressed: null,
-		_touch_released: null,
+		key: null,
+		pressed: null,
+		released: null,
+		touch: null,
+		touch_pressed: null,
+		touch_released: null,
 
 		// PRIVATE FUNCTIONS
 		// Writes `array`(array of integers) to memory at address `buffer`
-		_writeArray32ToMemory: function(array, buffer) {
+		writeArray32ToMemory: function(array, buffer) {
 			for (var i=0; i<array.length; i++) {
 				HEAP32[((buffer+i*4)>>2)] = array[i];
 			}
 		},
 		// Reads `length` integers from memory at address `buffer`
-		_ReadArray32FromMemory: function(buffer, length) {
+		ReadArray32FromMemory: function(buffer, length) {
 			var res = [];
 			for (var i=0; i<length; i++) {
 				res.push(HEAP32[((buffer+i*4)>>2)]);
@@ -41,44 +41,44 @@ var AllegroJS = {
 			return res;
 		},
 		// Creates C arrays storing key statuses
-		_post_install_keyboard: function() {
-			ALLEG._ckey = _malloc(4 * key.length);
-			ALLEG._cpressed = _malloc(4 * pressed.length);
-			ALLEG._creleased = _malloc(4 * released.length);
+		post_install_keyboard: function() {
+			ALLEG.key = _malloc(4 * key.length);
+			ALLEG.pressed = _malloc(4 * pressed.length);
+			ALLEG.released = _malloc(4 * released.length);
 		},
 		// Creates C arrays storing touch structures
-		_post_install_touch: function() {
+		post_install_touch: function() {
 			// limitation: maximum 32 touch object
-			ALLEG._touch = _malloc(4*11*32);
-			ALLEG._touch_pressed = _malloc(4*11*32);
-			ALLEG._touch_released = _malloc(4*11*32);
+			ALLEG.touch = _malloc(4*11*32);
+			ALLEG.touch_pressed = _malloc(4*11*32);
+			ALLEG.touch_released = _malloc(4*11*32);
 		},
 		// Deletes C arrays storing key statuses
-		_post_remove_keyboard: function() {
-			_free(ALLEG._ckey);
-			_free(ALLEG._cpressed);
-			_free(ALLEG._creleased);
-			ALLEG._ckey = null;
-			ALLEG._cpressed = null;
-			ALLEG._creleased = null;
+		post_remove_keyboard: function() {
+			_free(ALLEG.key);
+			_free(ALLEG.pressed);
+			_free(ALLEG.released);
+			ALLEG.key = null;
+			ALLEG.pressed = null;
+			ALLEG.released = null;
 		},
 		// Deletes C arrays storing touch structures
-		_post_remove_touch: function() {
-			_free(ALLEG._touch);
-			_free(ALLEG._touch_pressed);
-			_free(ALLEG._touch_released);
-			ALLEG._touch = null;
-			ALLEG._touch_pressed = null;
-			ALLEG._touch_released = null;
+		post_remove_touch: function() {
+			_free(ALLEG.touch);
+			_free(ALLEG.touch_pressed);
+			_free(ALLEG.touch_released);
+			ALLEG.touch = null;
+			ALLEG.touch_pressed = null;
+			ALLEG.touch_released = null;
 		},
 		// Writes JS key arrays to C memory
-		_copy_key_statuses: function() {
-			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
-			ALLEG._writeArray32ToMemory(pressed, ALLEG._cpressed);
-			ALLEG._writeArray32ToMemory(released, ALLEG._creleased);
+		copy_key_statuses: function() {
+			ALLEG.writeArray32ToMemory(key, ALLEG.key);
+			ALLEG.writeArray32ToMemory(pressed, ALLEG.pressed);
+			ALLEG.writeArray32ToMemory(released, ALLEG.released);
 		},
 		// Writes JS touch arrays to C memory
-		_copy_touch_structs: function() {
+		copy_touch_structs: function() {
 			var write_touch_array = function(array, buffer) {
 				for (var i=0; (i<array.length && i<32); i++) {
 					HEAP32[((buffer + i*11*4       )>>2)] = array[i].x;
@@ -94,38 +94,38 @@ var AllegroJS = {
 					HEAP32[((buffer + i*11*4 + 10*4)>>2)] = array[i].dead;
 				}
 			};
-			write_touch_array(touch, ALLEG._touch);
-			write_touch_array(touch_pressed, ALLEG._touch_pressed);
-			write_touch_array(touch_released, ALLEG._touch_released);
+			write_touch_array(touch, ALLEG.touch);
+			write_touch_array(touch_pressed, ALLEG.touch_pressed);
+			write_touch_array(touch_released, ALLEG.touch_released);
 		},
 		// Creates `canvas` and `font` C globals
-		_post_set_gfx_mode: function() {
-			ALLEG._bitmaps[0] = canvas;
-			ALLEG._fonts[0] = font;
-			ALLEG._ccanvas = ALLEG._alloc_pack_bitmap(0);
+		post_set_gfx_mode: function() {
+			ALLEG.bitmaps[0] = canvas;
+			ALLEG.fonts[0] = font;
+			ALLEG.canvas = ALLEG.alloc_pack_bitmap(0);
 		},
 		// Stores bitmap infomations in a C bitmap struct
-		_pack_bitmap: function(handle) {
-			var addr = ALLEG._bitmap_addrs[handle];
+		pack_bitmap: function(handle) {
+			var addr = ALLEG.bitmap_addrs[handle];
 			setValue(addr, handle, "i32");
-			setValue(addr+4, ALLEG._bitmaps[handle].w, "i32");
-			setValue(addr+8, ALLEG._bitmaps[handle].h, "i32");
+			setValue(addr+4, ALLEG.bitmaps[handle].w, "i32");
+			setValue(addr+8, ALLEG.bitmaps[handle].h, "i32");
 		},
 		// Allocates and packs a bitmap for C
-		_alloc_pack_bitmap: function(handle) {
+		alloc_pack_bitmap: function(handle) {
 			var res = _malloc(3*4);
-			ALLEG._bitmap_addrs[handle] = res;
-			ALLEG._pack_bitmap(handle);
+			ALLEG.bitmap_addrs[handle] = res;
+			ALLEG.pack_bitmap(handle);
 			return res;
 		},
 		// Repacks every bitmaps (because bitmap loading is asynchronous) called by _ready
-		_repack_bitmaps: function() {
-			for (var it=1; it<ALLEG._bitmaps.length; it++) {
-				ALLEG._pack_bitmap(it);
+		repack_bitmaps: function() {
+			for (var it=1; it<ALLEG.bitmaps.length; it++) {
+				ALLEG.pack_bitmap(it);
 			}
 		},
-		// Returns the handle (array index for ALLEG._bitmaps) for the given bitmap struct pointed by `ptr`
-		_unpack_bitmap: function(ptr) {
+		// Returns the handle (array index for ALLEG.bitmaps) for the given bitmap struct pointed by `ptr`
+		unpack_bitmap: function(ptr) {
 			return getValue(ptr, "i32");
 		}
 	},
@@ -140,13 +140,13 @@ var AllegroJS = {
 	mouse_mx: function() { return mouse_mx; },
 	mouse_my: function() { return mouse_my; },
 	mouse_mz: function() { return mouse_mz; },
-	touch: function(len) { setValue(len, touch.length, "i32"); return ALLEG._touch; },
-	touch_pressed: function(len) { setValue(len, touch_pressed.length, "i32"); return ALLEG._touch_pressed; },
-	touch_released: function(len) { setValue(len, touch_released.length, "i32"); return ALLEG._touch_released; },
-	key: function() { return ALLEG._ckey; },
-	pressed: function() { return ALLEG._cpressed; },
-	released: function() { return ALLEG._creleased; },
-	canvas: function() { return ALLEG._ccanvas; },
+	touch: function(len) { setValue(len, touch.length, "i32"); return ALLEG.touch; },
+	touch_pressed: function(len) { setValue(len, touch_pressed.length, "i32"); return ALLEG.touch_pressed; },
+	touch_released: function(len) { setValue(len, touch_released.length, "i32"); return ALLEG.touch_released; },
+	key: function() { return ALLEG.key; },
+	pressed: function() { return ALLEG.pressed; },
+	released: function() { return ALLEG.released; },
+	canvas: function() { return ALLEG.canvas; },
 	SCREEN_W: function() { return SCREEN_W; },
 	SCREEN_H: function() { return SCREEN_H; },
 	font: function() { return 0; },
@@ -160,8 +160,8 @@ var AllegroJS = {
 		// We have to reset `key` here because emscripten use the key variable in src/shell.js
 		key = [];
 		allegro_init_all(cid_s, w, h, menu, []); // FIXME: enable_keys to JS array
-		ALLEG._post_install_keyboard();
-		ALLEG._post_set_gfx_mode();
+		ALLEG.post_install_keyboard();
+		ALLEG.post_set_gfx_mode();
 	},
 
 	install_mouse: install_mouse,
@@ -171,11 +171,11 @@ var AllegroJS = {
 
 	install_touch: function() {
 		install_touch();
-		ALLEG._post_install_touch();
+		ALLEG.post_install_touch();
 	},
 	remove_touch: function() {
 		remove_touch();
-		ALLEG._post_remove_touch();
+		ALLEG.post_remove_touch();
 	},
 
 	install_timer: install_timer,
@@ -200,10 +200,10 @@ var AllegroJS = {
 		loop(
 			function() {
 				if (_keyboard_installed) {
-					ALLEG._copy_key_statuses();
+					ALLEG.copy_key_statuses();
 				}
 				if (_touch_installed) {
-					ALLEG._copy_touch_structs();
+					ALLEG.copy_touch_structs();
 				}
 				var stack = Runtime.stackSave();
 				Runtime.dynCall('v', p, null);
@@ -216,7 +216,7 @@ var AllegroJS = {
 	ready: function(p, b) {
 		var procedure = function() {
 			// repack bitmaps because they were loaded asynchronously
-			ALLEG._repack_bitmaps();
+			ALLEG.repack_bitmaps();
 			var stack = Runtime.stackSave();
 			Runtime.dynCall('v', p, null);
 			Runtime.stackRestore(stack);
@@ -241,23 +241,23 @@ var AllegroJS = {
 		// We have to reset `key` here because emscripten use the key variable in src/shell.js
 		key = [];
 		install_keyboard([]); // FIXME: enable_keys to JS array
-		ALLEG._post_install_keyboard();
+		ALLEG.post_install_keyboard();
 	},
 	remove_keyboard: function() {
 		remove_keyboard();
-		ALLEG._post_remove_keyboard();
+		ALLEG.post_remove_keyboard();
 	},
 
 	create_bitmap: function(width, height) {
-		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(create_bitmap(width, height)) - 1);
+		return ALLEG.alloc_pack_bitmap(ALLEG.bitmaps.push(create_bitmap(width, height)) - 1);
 	},
 	load_bitmap: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bitmap(filename_s)) - 1);
+		return ALLEG.alloc_pack_bitmap(ALLEG.bitmaps.push(load_bitmap(filename_s)) - 1);
 	},
 	load_bmp: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bmp(filename_s)) - 1);
+		return ALLEG.alloc_pack_bitmap(ALLEG.bitmaps.push(load_bmp(filename_s)) - 1);
 	},
 	load_sheet: function(filename, w, h, len) {
 		var filename_s = Pointer_stringify(filename);
@@ -265,8 +265,8 @@ var AllegroJS = {
 		setValue(len, frames.length, "i32");
 		var res = _malloc(4*frames.length);
 		for (var it=0; it<frames.length; it++) {
-			var handle = ALLEG._bitmaps.push(frames[it]);
-			setValue(res+4*it, ALLEG._alloc_pack_bitmap(handle), "*");
+			var handle = ALLEG.bitmaps.push(frames[it]);
+			setValue(res+4*it, ALLEG.alloc_pack_bitmap(handle), "*");
 		}
 		return res;
 	},
@@ -274,7 +274,7 @@ var AllegroJS = {
 	set_gfx_mode: function(canvas_id, w, h, smooth) {
 		var cid_s = Pointer_stringify(canvas_id);
 		set_gfx_mode(cid_s, w, h, smooth);
-		ALLEG._post_set_gfx_mode();
+		ALLEG.post_set_gfx_mode();
 	},
 
 	makecol: makecol,
@@ -288,110 +288,110 @@ var AllegroJS = {
 	getbf: getbf,
 	getaf: getaf,
 	getpixel: function(bitmap, x, y) {
-		return getpixel(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y);
+		return getpixel(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y);
 	},
 	putpixel: function(bitmap, x, y, colour) {
-		putpixel(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, colour);
+		putpixel(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, colour);
 	},
 	clear_bitmap: function(bitmap) {
-		clear_bitmap(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)]);
+		clear_bitmap(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)]);
 	},
 	clear_to_color: function(bitmap, colour) {
-		clear_to_color(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], colour);
+		clear_to_color(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], colour);
 	},
 	line: function(bitmap, x1, y1, x2, y2, colour, width) {
-		line(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, colour, width);
+		line(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x1, y1, x2, y2, colour, width);
 	},
 	vline: function(bitmap, x, y1, y2, colour, width) {
-		vline(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y1, y2, colour, width);
+		vline(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y1, y2, colour, width);
 	},
 	hline: function(bitmap, x1, y, x2, colour, width) {
-		hline(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y, x2, colour, width);
+		hline(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x1, y, x2, colour, width);
 	},
 	triangle: function(bitmap, x1, y1, x2, y2, x3, y3, colour, width) {
-		triangle(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, x3, y3, colour, width);
+		triangle(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x1, y1, x2, y2, x3, y3, colour, width);
 	},
 	trianglefill: function(bitmap, x1, y1, x2, y2, x3, y3, colour) {
-		trianglefill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x1, y1, x2, y2, x3, y3, colour);
+		trianglefill(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x1, y1, x2, y2, x3, y3, colour);
 	},
 	polygon: function(bitmap, vertices, points, colour, width) {
-		var points_arr = ALLEG._ReadArray32FromMemory(points, vertices);
-		polygon(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points_arr, colour, width);
+		var points_arr = ALLEG.ReadArray32FromMemory(points, vertices);
+		polygon(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], vertices, points_arr, colour, width);
 	},
 	polygonfill: function(bitmap, vertices, points, colour) {
-		var points_arr = ALLEG._ReadArray32FromMemory(points, vertices);
-		polygonfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], vertices, points_arr, colour);
+		var points_arr = ALLEG.ReadArray32FromMemory(points, vertices);
+		polygonfill(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], vertices, points_arr, colour);
 	},
 	rect: function(bitmap, x, y, w, h, colour, width) {
-		rect(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, w, h, colour, width);
+		rect(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, w, h, colour, width);
 	},
 	rectfill: function(bitmap, x, y, w, h, colour) {
-		rectfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, w, h, colour);
+		rectfill(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, w, h, colour);
 	},
 	circle: function(bitmap, x, y, radius, colour, width) {
-		circle(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, radius, colour, width);
+		circle(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, radius, colour, width);
 	},
 	circlefill: function(bitmap, x, y, radius, colour) {
-		circlefill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, radius, colour);
+		circlefill(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, radius, colour);
 	},
 	arc: function(bitmap, x, y, ang1, ang2, radius, colour, width) {
-		arc(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, ang1, ang2, radius, colour, width);
+		arc(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, ang1, ang2, radius, colour, width);
 	},
 	arcfill: function(bitmap, x, y, ang1, ang2, radius, colour) {
-		arcfill(ALLEG._bitmaps[ALLEG._unpack_bitmap(bitmap)], x, y, ang1, ang2, radius, colour);
+		arcfill(ALLEG.bitmaps[ALLEG.unpack_bitmap(bitmap)], x, y, ang1, ang2, radius, colour);
 	},
 
 	draw_sprite: function(bmp, sprite, x, y) {
-		draw_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y);
+		draw_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y);
 	},
 	scaled_sprite: function(bmp, sprite, x, y, sx, sy) {
-		scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, sx, sy);
+		scaled_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y, sx, sy);
 	},
 	rotate_sprite: function(bmp, sprite, x, y, angle) {
-		rotate_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, angle);
+		rotate_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y, angle);
 	},
 	pivot_sprite: function(bmp, sprite, x, y, cx, cy, angle) {
-		pivot_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, cx, cy, angle);
+		pivot_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y, cx, cy, angle);
 	},
 	rotate_scaled_sprite: function(bmp, sprite, x, y, angle, sx, sy) {
-		rotate_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, angle, sx, sy);
+		rotate_scaled_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y, angle, sx, sy);
 	},
 	pivot_scaled_sprite: function(bmp, sprite, x, y, cx, cy, angle, sx, sy) {
-		pivot_scaled_sprite(ALLEG._bitmaps[ALLEG._unpack_bitmap(bmp)], ALLEG._bitmaps[ALLEG._unpack_bitmap(sprite)], x, y, cx, cy, angle, sx, sy);
+		pivot_scaled_sprite(ALLEG.bitmaps[ALLEG.unpack_bitmap(bmp)], ALLEG.bitmaps[ALLEG.unpack_bitmap(sprite)], x, y, cx, cy, angle, sx, sy);
 	},
 	blit: function(source, dest, sx, sy, dx, dy, w, h) {
-		blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], sx, sy, dx, dy, w, h);
+		blit(ALLEG.bitmaps[ALLEG.unpack_bitmap(source)], ALLEG.bitmaps[ALLEG.unpack_bitmap(dest)], sx, sy, dx, dy, w, h);
 	},
 	simple_blit: function(source, dest, x, y) {
-		simple_blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], x, y);
+		simple_blit(ALLEG.bitmaps[ALLEG.unpack_bitmap(source)], ALLEG.bitmaps[ALLEG.unpack_bitmap(dest)], x, y);
 	},
 	stretch_blit: function(source, dest, sx, sy, sw, sh, dx, dy, dw, dh) {
-		stretch_blit(ALLEG._bitmaps[ALLEG._unpack_bitmap(source)], ALLEG._bitmaps[ALLEG._unpack_bitmap(dest)], sx, sy, sw, sh, dx, dy, dw, dh);
+		stretch_blit(ALLEG.bitmaps[ALLEG.unpack_bitmap(source)], ALLEG.bitmaps[ALLEG.unpack_bitmap(dest)], sx, sy, sw, sh, dx, dy, dw, dh);
 	},
 
 	load_base64_font: function(data) {
 		var data_s = Pointer_stringify(data);
-		return ALLEG._fonts.push(load_base64_font(data_s));
+		return ALLEG.fonts.push(load_base64_font(data_s));
 	},
 	load_font: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._fonts.push(load_font(filename_s)) - 1;
+		return ALLEG.fonts.push(load_font(filename_s)) - 1;
 	},
 	create_font: function(family) {
 		var family_s = Pointer_stringify(family);
-		return ALLEG._fonts.push(create_font(family_s)) - 1;
+		return ALLEG.fonts.push(create_font(family_s)) - 1;
 	},
 	textout: function(b, f, s, x, y, size, col, outline, width) {
 		var str = Pointer_stringify(s);
-		textout(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
+		textout(ALLEG.bitmaps[ALLEG.unpack_bitmap(b)], ALLEG.fonts[f], str, x, y, size, col, outline, width);
 	},
 	textout_centre: function(b, f, s, x, y, size, col, outline, width) {
 		var str = Pointer_stringify(s);
-		textout_centre(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
+		textout_centre(ALLEG.bitmaps[ALLEG.unpack_bitmap(b)], ALLEG.fonts[f], str, x, y, size, col, outline, width);
 	},
 	textout_right: function(b, f, s, x, y, size, col, outline, width) {
 		var str = Pointer_stringify(s);
-		textout_right(ALLEG._bitmaps[ALLEG._unpack_bitmap(b)], ALLEG._fonts[f], str, x, y, size, col, outline, width);
+		textout_right(ALLEG.bitmaps[ALLEG.unpack_bitmap(b)], ALLEG.fonts[f], str, x, y, size, col, outline, width);
 	},
 
 	install_sound: install_sound,
@@ -399,22 +399,22 @@ var AllegroJS = {
 	get_volume: get_volume,
 	load_sample: function(filename) {
 		var filename_s = Pointer_stringify(filename);
-		return ALLEG._samples.push(load_sample(filename_s)) - 1;
+		return ALLEG.samples.push(load_sample(filename_s)) - 1;
 	},
 	destroy_sample: function(sample) {
-		destroy_sample(ALLEG._samples[sample]);
+		destroy_sample(ALLEG.samples[sample]);
 	},
 	play_sample: function(sample, vol, freq, loop) {
-		play_sample(ALLEG._samples[sample], vol, freq, loop);
+		play_sample(ALLEG.samples[sample], vol, freq, loop);
 	},
 	adjust_sample: function(sample, vol, freq, loop) {
-		adjust_sample(ALLEG._samples[sample], vol, freq, loop);
+		adjust_sample(ALLEG.samples[sample], vol, freq, loop);
 	},
 	stop_sample: function(sample) {
-		stop_sample(ALLEG._samples[sample]);
+		stop_sample(ALLEG.samples[sample]);
 	},
 	pause_sample: function(sample) {
-		pause_sample(ALLEG._samples[sample]);
+		pause_sample(ALLEG.samples[sample]);
 	},
 
 	// rand renamed to rand16 because of name clashing in C source
