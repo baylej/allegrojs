@@ -1,7 +1,6 @@
 #include <allegro.h>
 
-int main(void)
-{
+int main(void) {
 	// Initialising allegro.js
 	allegro_init();
 

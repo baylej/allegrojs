@@ -23,32 +23,31 @@ void draw(void)
 	stretch_blit(clouds, canvas(), 0, 0, clouds->w, clouds->h, 0, 0, SCREEN_W(), SCREEN_H());
 
 	// draws the ball centered
-	draw_sprite(canvas(),ball,cx,cy);
+	draw_sprite(canvas(), ball, cx, cy);
 }
 
 // update game logic
-void update(void)
-{
+void update(void) {
 	// did the ball bounce off the wall this turn?
 	int bounced = 0;
 
 	// if the ball is going to collide with screen bounds
 	// after applying velocity, if so, reverse velocity
 	// and remember that it bonced
-	if (cx+vx>SCREEN_W()) {vx=-speed;bounced=1;}
-	if (cy+vy>SCREEN_H()) {vy=-speed*3;bounced=1;}
-	if (cx+vx<0) {vx=speed;bounced=1;}
-	if (cy+vy<0) {vy=speed;bounced=1;}
+	if (cx+vx > SCREEN_W()) { vx =- speed;   bounced=1; }
+	if (cy+vy > SCREEN_H()) { vy =- speed*3; bounced=1; }
+	if (cx+vx < 0) { vx = speed; bounced=1; }
+	if (cy+vy < 0) { vy = speed; bounced=1; }
 
 	// move the ball
-	cx+=vx;
-	cy+=vy;
+	cx += vx;
+	cy += vy;
 
 	// if it bounced, play a sound
 	if (bounced) play_sample(bounce, 1., 1., 0);
 
 	// add gravity
-	vy+=.3;
+	vy += .3;
 }
 
 void in_loop(void) {
@@ -67,8 +66,7 @@ void when_ready(void) {
 }
 
 // entry point of our example
-int main(void)
-{
+int main(void) {
 	// enable debugging to console element
 	enable_debug("output");
 

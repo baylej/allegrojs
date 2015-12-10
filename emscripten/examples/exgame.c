@@ -9,17 +9,16 @@ BITMAP_OBJECT *man, *apple, *bg;
 SAMPLE_OBJECT *munch;
 
 // apple position
-float apple_x=200, apple_y=200;
+float apple_x = 200, apple_y = 200;
 
 // player position
-float player_x=100, player_y=100;
+float player_x = 100, player_y = 100;
 
 // score
 int score = 0;
 
 // rendering function
-void draw(void)
-{
+void draw(void) {
 	// draw background
 	simple_blit(bg, canvas(), 0, 0);
 
@@ -35,25 +34,24 @@ void draw(void)
 	textout(canvas(), font(), str, 10, 30, 24, makecol(255,255,255,255), makecol(0,0,0,255), 1);
 }
 
-// update gaem logic
-void update(void)
-{
+// update game logic
+void update(void) {
 	// check for keypresses and move the player accordingly
-	if (key()[KEY_UP]) player_y-=4;
-	if (key()[KEY_DOWN]) player_y+=4;
-	if (key()[KEY_LEFT]) player_x-=4;
-	if (key()[KEY_RIGHT]) player_x+=4;
+	if (key()[KEY_UP])    player_y -= 4;
+	if (key()[KEY_DOWN])  player_y += 4;
+	if (key()[KEY_LEFT])  player_x -= 4;
+	if (key()[KEY_RIGHT]) player_x += 4;
 
 	// if player is touching the apple...
-	if (distance(player_x, player_y, apple_x, apple_y)<20)
+	if (distance(player_x, player_y, apple_x, apple_y) < 20)
 	{
 		// play muching sound
 		play_sample(munch, 1., 1., 0);
 
 		// move apple to a new spot, making it look like it's
 		// a breand new apple
-		apple_x = rand16()%(SCREEN_W()-32);
-		apple_y = rand16()%(SCREEN_H()-32);
+		apple_x = rand16() % (SCREEN_W()-32);
+		apple_y = rand16() % (SCREEN_H()-32);
 
 		// increase score
 		score++;
@@ -72,8 +70,7 @@ void when_ready(void) {
 	loop(in_loop, BPS_TO_TIMER(60));
 }
 
-int main(void)
-{
+int main(void) {
 	enable_debug("output");
 	allegro_init_all("canvas", 640, 480, 0, NULL, 0);
 	man = load_bmp("data/man.png");

@@ -4,7 +4,7 @@
 
 #define SPRITE_MAX 65536
 
-int num=0, speed=3;
+int num = 0, speed = 3;
 float x[SPRITE_MAX], y[SPRITE_MAX], vx[SPRITE_MAX], vy[SPRITE_MAX];
 long last_time = 0;
 BITMAP_OBJECT *bmp;
@@ -14,10 +14,10 @@ void in_loop(void) {
 
 	for(int c=0; c<num; c++) {
 		draw_sprite(canvas(), bmp, x[c], y[c]);
-		if (x[c]+vx[c] > SCREEN_W()) { vx[c] = -abs(vx[c]); }
-		if (y[c]+vy[c] > SCREEN_H()) { vy[c] = -abs(vy[c]); }
-		if (x[c]+vx[c] < -64)        { vx[c] =  abs(vx[c]); }
-		if (y[c]+vy[c] < -64)        { vy[c] =  abs(vy[c]); }
+		if (x[c]+vx[c] > SCREEN_W()) vx[c] = -abs(vx[c]);
+		if (y[c]+vy[c] > SCREEN_H()) vy[c] = -abs(vy[c]);
+		if (x[c]+vx[c] < -64)        vx[c] =  abs(vx[c]);
+		if (y[c]+vy[c] < -64)        vy[c] =  abs(vy[c]);
 		x[c] += vx[c];
 		y[c] += vy[c];
 	}

@@ -9,8 +9,7 @@ void when_ready(void) {
 	stretch_blit(logo, canvas(), 0, 0, logo->w, logo->h, 0, 0, SCREEN_W(), SCREEN_H());
 }
 
-int main(void)
-{
+int main(void) {
 	// Initialises allegro.js
 	allegro_init();
 
