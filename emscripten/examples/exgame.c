@@ -75,7 +75,7 @@ void when_ready(void) {
 int main(void)
 {
 	enable_debug("output");
-	allegro_init_all("canvas", 640, 480, 0, NULL);
+	allegro_init_all("canvas", 640, 480, 0, NULL, 0);
 	man = load_bmp("data/man.png");
 	apple = load_bmp("data/apple.png");
 	bg = load_bmp("data/grass.jpg");

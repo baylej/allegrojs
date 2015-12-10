@@ -155,11 +155,12 @@ var AllegroJS = {
 	// FUNCTIONS
 	install_allegro: install_allegro,
 	allegro_init: allegro_init,
-	allegro_init_all: function(id, w, h, menu, enable_keys) {
+	allegro_init_all: function(id, w, h, menu, enable_keys, len) {
 		var cid_s = Pointer_stringify(id);
 		// We have to reset `key` here because emscripten use the key variable in src/shell.js
 		key = [];
-		allegro_init_all(cid_s, w, h, menu, []); // FIXME: enable_keys to JS array
+		var enable_key_jsa = ALLEG.ReadArray32FromMemory(enable_keys, len);
+		allegro_init_all(cid_s, w, h, menu, enable_key_jsa);
 		ALLEG.post_install_keyboard();
 		ALLEG.post_set_gfx_mode();
 	},
@@ -237,10 +238,11 @@ var AllegroJS = {
 	},
 	remove_all_ints: remove_all_ints,
 
-	install_keyboard: function(enable_keys) {
+	install_keyboard: function(enable_keys, len) {
 		// We have to reset `key` here because emscripten use the key variable in src/shell.js
 		key = [];
-		install_keyboard([]); // FIXME: enable_keys to JS array
+		var enable_key_jsa = ALLEG.ReadArray32FromMemory(enable_keys, len);
+		install_keyboard(enable_key_jsa);
 		ALLEG.post_install_keyboard();
 	},
 	remove_keyboard: function() {

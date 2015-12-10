@@ -254,7 +254,7 @@ void when_ready(void) {
 
 int main(void) {
 	enable_debug("output");
-	allegro_init_all("canvas", 640, 480, 0, NULL);
+	allegro_init_all("canvas", 640, 480, 0, NULL, 0);
 	timercolor = makecol(192, 168, 1, 254);
 	clouds = load_bmp("data/clouds.png");
 	ball = load_bmp("data/planet.png");

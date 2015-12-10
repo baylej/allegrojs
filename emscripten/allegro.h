@@ -13,7 +13,7 @@ extern "C" {
 /* CONFIGURATION ROUTINES */
 extern void install_allegro(void);
 extern void allegro_init(void);
-extern void allegro_init_all(const char *canvas_id, int w, int h, int menu, int *enable_keys);
+extern void allegro_init_all(const char *canvas_id, int w, int h, int menu, const int *enable_keys, int enable_keys_len);
 #define END_OF_MAIN()
 
 /* MOUSE ROUTINES */
@@ -82,7 +82,7 @@ const char KEY_A = 0x41, KEY_B = 0x42, KEY_C = 0x43, KEY_D = 0x44, KEY_E = 0x45,
 extern int* key(void);
 extern int* pressed(void);
 extern int* released(void);
-extern int install_keyboard(int *enable_keys);
+extern int install_keyboard(const int *enable_keys, int enable_keys_len);
 extern int remove_keyboard(void);
 
 /* BITMAP ROUTINES */
