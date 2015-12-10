@@ -9,8 +9,7 @@ void draw(void) {
 
 	int touch_len;
 	TOUCH_OBJECT *touchp = touch(&touch_len);
-	for (int c=0; c<touch_len; c++)
-	{
+	for (int c=0; c<touch_len; c++) {
 		draw_sprite(canvas(), ball, touchp[c].x, touchp[c].y);
 	}
 }
