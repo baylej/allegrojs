@@ -93,7 +93,7 @@ typedef struct {
 extern BITMAP_OBJECT* create_bitmap(int width, int height);
 extern BITMAP_OBJECT* load_bitmap(const char *filename);
 extern BITMAP_OBJECT* load_bmp(const char *filename);
-extern BITMAP_OBJECT** load_sheet(const char *filename, int w, int h, int &len);
+extern BITMAP_OBJECT** load_sheet(const char *filename, int w, int h, int *len);
 
 /* GRAPHICS MODES */
 extern BITMAP_OBJECT* canvas(void);

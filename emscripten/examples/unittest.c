@@ -249,7 +249,7 @@ void in_loop(void) {
 
 void when_ready(void) {
 	stretch_blit(clouds, canvas(), 0, 0, clouds->w, clouds->h, 0, 0, SCREEN_W(), SCREEN_H());
-	loop(in_loop, MSEC_TO_TIMER(60));
+	loop(in_loop, BPS_TO_TIMER(60));
 }
 
 int main(void) {
