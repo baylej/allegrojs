@@ -6,7 +6,7 @@ int main(void)
 	allegro_init();
 
 	// Selecting canvas element adn setting it up for display at 640x480
-	set_gfx_mode("canvas", 640, 480);
+	set_gfx_mode("canvas", 640, 480, 1);
 
 	// Clears the screen to white
 	clear_to_color(canvas(), makecol(255, 255, 255, 255));

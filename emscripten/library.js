@@ -206,9 +206,9 @@ var AllegroJS = {
 		return res;
 	},
 
-	set_gfx_mode: function(canvas_id, w, h) {
+	set_gfx_mode: function(canvas_id, w, h, smooth) {
 		var cid_s = Pointer_stringify(canvas_id);
-		set_gfx_mode(cid_s, w, h);
+		set_gfx_mode(cid_s, w, h, smooth);
 		ALLEG._post_set_gfx_mode();
 	},
 

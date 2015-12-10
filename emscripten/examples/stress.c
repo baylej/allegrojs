@@ -44,7 +44,7 @@ void when_ready(void) {
 
 int main(void) {
 	enable_debug("output");
-	set_gfx_mode("canvas", 640, 480);
+	set_gfx_mode("canvas", 640, 480, 1);
 	bmp = load_bmp("data/planet.png");
 
 	ready(when_ready, NULL);

@@ -15,7 +15,7 @@ int main(void)
 	allegro_init();
 
 	// Installs graphics at given canvas in 640x480 resolution
-	set_gfx_mode("canvas", 640, 480);
+	set_gfx_mode("canvas", 640, 480, 1);
 
 	// Loads an image into the bitmap object
 	logo = load_bmp("data/allegro.png");

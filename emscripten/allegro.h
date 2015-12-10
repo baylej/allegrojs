@@ -99,7 +99,7 @@ extern BITMAP_OBJECT** load_sheet(const char *filename, int w, int h, int *len);
 extern BITMAP_OBJECT* canvas(void);
 extern int SCREEN_W(void);
 extern int SCREEN_H(void);
-extern int set_gfx_mode(const char *canvas_id, int width, int height);
+extern int set_gfx_mode(const char *canvas_id, int width, int height, int smooth);
 
 /* DRAWING PRIMITIVES */
 #define   PI = 3.14159265

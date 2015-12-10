@@ -74,7 +74,7 @@ int main(void)
 
 	// put allegro in canvas with id="canvas"
 	// make the dimesnions 640x480
-	set_gfx_mode("canvas", 640, 480);
+	set_gfx_mode("canvas", 640, 480, 1);
 
 	install_sound();
 
