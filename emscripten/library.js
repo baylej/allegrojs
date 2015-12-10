@@ -15,7 +15,6 @@ var AllegroJS = {
 		_samples: [null],
 		_fonts: [null],
 		_ccanvas: null,
-		_keyboard_installed: false,
 		_ckey: null,
 		_cpressed: null,
 		_creleased: null,
@@ -34,7 +33,6 @@ var AllegroJS = {
 			return res;
 		},
 		_post_install_keyboard: function() {
-			ALLEG._keyboard_installed = true;
 			ALLEG._ckey = _malloc(4 * key.length);
 			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
 			ALLEG._cpressed = _malloc(4 * pressed.length);
@@ -127,7 +125,7 @@ var AllegroJS = {
 		install_int_ex(procedure, speed);
 	},
 	loop: function(p, speed) {
-		if (ALLEG._keyboard_installed) {
+		if (_keyboard_installed) {
 			loop(
 				function() {
 					ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
