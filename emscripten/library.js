@@ -49,9 +49,9 @@ var AllegroJS = {
 		// Creates C arrays storing touch structures
 		_post_install_touch: function() {
 			// limitation: maximum 32 touch object
-			ALLEG._touch = malloc(4*11*32);
-			ALLEG._touch_pressed = malloc(4*11*32);
-			ALLEG._touch_released = malloc(4*11*32);
+			ALLEG._touch = _malloc(4*11*32);
+			ALLEG._touch_pressed = _malloc(4*11*32);
+			ALLEG._touch_released = _malloc(4*11*32);
 		},
 		// Writes JS key arrays to C memory
 		_copy_key_statuses: function() {
@@ -151,7 +151,10 @@ var AllegroJS = {
 	show_mouse: show_mouse,
 	hide_mouse: hide_mouse,
 
-	install_touch: install_touch,
+	install_touch: function() {
+		install_touch();
+		ALLEG._post_install_touch();
+	},
 	remove_touch: remove_touch,
 
 	install_timer: install_timer,
