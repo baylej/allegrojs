@@ -105,6 +105,9 @@ var AllegroJS = {
 	show_mouse: show_mouse,
 	hide_mouse: hide_mouse,
 
+	install_touch: install_touch,
+	remove_touch: remove_touch,
+
 	install_timer: install_timer,
 	altime: time,
 	install_int: function(p, msec) {
@@ -190,6 +193,17 @@ var AllegroJS = {
 	load_bmp: function(filename) {
 		var filename_s = Pointer_stringify(filename);
 		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(load_bmp(filename_s)) - 1);
+	},
+	load_sheet: function(filename, w, h, len) {
+		var filename_s = Pointer_stringify(filename);
+		var frames = load_sheet(filename_s, w, h);
+		setValue(len, frames.length, "i32");
+		var res = _malloc(4*frames.length);
+		for (var it=0; it<frames.length; it++) {
+			var handle = ALLEG._bitmaps.push(frames[it]);
+			setValue(res+4*it, ALLEG._alloc_pack_bitmap(handle), "*");
+		}
+		return res;
 	},
 
 	set_gfx_mode: function(canvas_id, w, h) {

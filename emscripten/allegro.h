@@ -32,6 +32,16 @@ extern int remove_mouse(void);
 extern int show_mouse(void);
 extern int hide_mouse(void);
 
+/* TOUCH ROUTINES */
+typedef struct {
+	int x, y, mx, my, px, py, sx, sy, id, age, dead;
+} TOUCH_OBJECT;
+extern TOUCH_OBJECT* touch(void);
+extern TOUCH_OBJECT* touch_pressed(void);
+extern TOUCH_OBJECT* touch_released(void);
+extern void install_touch();
+extern void remove_touch();
+
 /* TIMER ROUTINES */
 #define SECS_TO_TIMER(secs) ( secs*1000 )
 #define MSEC_TO_TIMER(msec) ( msec )
@@ -83,6 +93,7 @@ typedef struct {
 extern BITMAP_OBJECT* create_bitmap(int width, int height);
 extern BITMAP_OBJECT* load_bitmap(const char *filename);
 extern BITMAP_OBJECT* load_bmp(const char *filename);
+extern BITMAP_OBJECT** load_sheet(const char *filename, int w, int h, int &len);
 
 /* GRAPHICS MODES */
 extern BITMAP_OBJECT* canvas(void);
@@ -128,7 +139,7 @@ extern void arcfill(BITMAP_OBJECT *bitmap, int x, int y, float ang1, float ang2,
 
 /* BLITTING AND SPRITES */
 extern void draw_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y);
-extern void scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int sx, int sy);
+extern void scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float sx, float sy);
 extern void rotate_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle);
 extern void pivot_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, int cx, int cy, float angle);
 extern void rotate_scaled_sprite(BITMAP_OBJECT *bmp, BITMAP_OBJECT *sprite, int x, int y, float angle, float sx, float sy);
