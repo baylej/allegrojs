@@ -53,6 +53,24 @@ var AllegroJS = {
 			ALLEG._touch_pressed = _malloc(4*11*32);
 			ALLEG._touch_released = _malloc(4*11*32);
 		},
+		// Deletes C arrays storing key statuses
+		_post_remove_keyboard: function() {
+			_free(ALLEG._ckey);
+			_free(ALLEG._cpressed);
+			_free(ALLEG._creleased);
+			ALLEG._ckey = null;
+			ALLEG._cpressed = null;
+			ALLEG._creleased = null;
+		},
+		// Deletes C arrays storing touch structures
+		_post_remove_touch: function() {
+			_free(ALLEG._touch);
+			_free(ALLEG._touch_pressed);
+			_free(ALLEG._touch_released);
+			ALLEG._touch = null;
+			ALLEG._touch_pressed = null;
+			ALLEG._touch_released = null;
+		},
 		// Writes JS key arrays to C memory
 		_copy_key_statuses: function() {
 			ALLEG._writeArray32ToMemory(key, ALLEG._ckey);
@@ -155,7 +173,10 @@ var AllegroJS = {
 		install_touch();
 		ALLEG._post_install_touch();
 	},
-	remove_touch: remove_touch,
+	remove_touch: function() {
+		remove_touch();
+		ALLEG._post_remove_touch();
+	},
 
 	install_timer: install_timer,
 	altime: time,
@@ -222,7 +243,10 @@ var AllegroJS = {
 		install_keyboard([]); // FIXME: enable_keys to JS array
 		ALLEG._post_install_keyboard();
 	},
-	remove_keyboard: remove_keyboard,
+	remove_keyboard: function() {
+		remove_keyboard();
+		ALLEG._post_remove_keyboard();
+	},
 
 	create_bitmap: function(width, height) {
 		return ALLEG._alloc_pack_bitmap(ALLEG._bitmaps.push(create_bitmap(width, height)) - 1);
